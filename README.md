@@ -1,2 +1,1 @@
-# libScricon
-The Simple Graphical Console Library
+# libScricon: The Simple Graphical Console Library
