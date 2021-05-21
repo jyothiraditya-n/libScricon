@@ -4,7 +4,7 @@ Copyright (C) 2021 Jyothiraditya Nellakra
 # Pronunciation
 Scricon is pronounced with the _scr-_ of _script_ and the _icon_ of... well... the word _icon_.
 
-In phonetic, it's spelt /skɹaɪkən/.
+The spelling in the international phonetic alphabet is /skɹaɪkən/.
 
 ## Etymology
 
