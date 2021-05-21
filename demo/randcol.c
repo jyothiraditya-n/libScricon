@@ -21,6 +21,10 @@
 #include <LSC_buffer.h>
 #include <LSC_error.h>
 
+static char all_chrs[256];
+static char all_fgs[16];
+static char all_bgs[16];
+
 static LSCb_t buf;
 
 static void about() {
@@ -42,26 +46,41 @@ static void about() {
 	return;
 }
 
-static void builtin() {
+static void engine(const char *chrs, const char *fgs, const char *bgs,
+	size_t len_chrs, size_t len_fgs, size_t len_bgs)
+{
 	LSCb_init(&buf);
+	buf.use_colour = true;
+
 	LSCb_alloc(&buf);
 	srand(time(NULL));
 
 	for(size_t i = 0; i < buf.width; i++)
 		for(size_t j = 0; j < buf.height; j++)
 	{
-		LSCb_set(&buf, i, j, (char) rand());
+		LSCb_setc(&buf, i, j,
+			(int) fgs[rand() % len_fgs],
+			(int) bgs[rand() % len_bgs]);
+
+		LSCb_set(&buf, i, j, chrs[rand() % len_chrs]);
 	}
 
 	while(1) {
-		LSCb_set(&buf, rand() % buf.width, rand() % buf.height, (char) rand());
+		LSCb_setc(&buf, rand() % buf.width,
+			rand() % buf.height,
+			(int) fgs[rand() % len_fgs],
+			(int) bgs[rand() % len_bgs]);
+
+		LSCb_set(&buf, rand() % buf.width,
+			rand() % buf.height,
+			chrs[rand() % len_chrs]);
 
 		LSCb_print(&buf);
 	}
 }
 
 static void help(const char *name) {
-	printf("Usage: %s [CHARS]\n", name);
+	printf("Usage: %s [CHARS] [FG_COLOURS] [BG_COLOURS]\n", name);
 	printf("       %s OPTION\n\n", name);
 
 	printf("[CHARS] is the optional list of characters to pick from "
@@ -73,6 +92,18 @@ static void help(const char *name) {
 		"charset limitations, and some characters may not "
 		"printed.\n\n");
 
+	printf("[*_COLOURS] are the optional lists of colours to pick from "
+		"when writing colours randomly to the screen. If not "
+		"specified, the program will pick from all legal "
+		"colours.\n\n");
+
+	printf("NOTE 1: The optional list of colours is still subject to "
+		"ANSI limitations, and some colours may not printed.\n\n");
+
+	printf("NOTE 2: The colours are passed a a string of characters, and "
+		"the ASCII values of the characters are used to set the ANSI "
+		"colour code.\n\n");
+
 	printf("Valid values for OPTION are:\n");
 	printf("--about: Print the about dialogue.\n");
 	printf("--help:  Print this help dialogue.\n\n");
@@ -82,14 +113,22 @@ static void help(const char *name) {
 }
 
 int main(int argc, char **argv) {
-	if(argc > 2) {
+	if(argc > 4) {
 		fprintf(stderr, "%s: Error: Too many arguments.\n\n", argv[0]);
 		help(argv[0]);
 		exit(1);
 	}
 
 	if(argc == 1) {
-		builtin();
+		for(size_t i = 0; i < 256; i++) all_chrs[i] = i;
+
+		for(size_t i = 0; i < 8; i++) all_fgs[i] = 30 + i;
+		for(size_t i = 0; i < 8; i++) all_fgs[i + 8] = 90 + i;
+
+		for(size_t i = 0; i < 8; i++) all_bgs[i] = 40 + i;
+		for(size_t i = 0; i < 8; i++) all_bgs[i + 8] = 100 + i;
+
+		engine(all_chrs, all_fgs, all_bgs, 256, 16, 16);
 	}
 
 	if(!strcmp(argv[1], "--about")) {
@@ -102,23 +141,54 @@ int main(int argc, char **argv) {
 		exit(0);
 	}
 
-	LSCb_init(&buf);
-	LSCb_alloc(&buf);
-	srand(time(NULL));
-
 	const char *chrs = argv[1];
-	size_t len = strlen(chrs);
+	size_t len_chrs = strlen(chrs);
 
-	for(size_t i = 0; i < buf.width; i++)
-		for(size_t j = 0; j < buf.height; j++)
-	{
-		LSCb_set(&buf, i, j, chrs[rand() % len]);
+	if(!len_chrs) {
+		for(size_t i = 0; i < 256; i++) all_chrs[i] = i;
+
+		chrs = all_chrs;
+		len_chrs = 256;
 	}
 
-	while(1) {
-		LSCb_set(&buf, rand() % buf.width,
-			rand() % buf.height, chrs[rand() % len]);
+	if(argc == 2) {
+		for(size_t i = 0; i < 8; i++) all_fgs[i] = 30 + i;
+		for(size_t i = 0; i < 8; i++) all_fgs[i + 8] = 90 + i;
 
-		LSCb_print(&buf);
+		for(size_t i = 0; i < 8; i++) all_bgs[i] = 40 + i;
+		for(size_t i = 0; i < 8; i++) all_bgs[i + 8] = 100 + i;
+
+		engine(chrs, all_fgs, all_bgs, len_chrs, 16, 16);
 	}
+
+	const char *fgs = argv[2];
+	size_t len_fgs = strlen(fgs);
+
+	if(!len_fgs) {
+		for(size_t i = 0; i < 8; i++) all_fgs[i] = 30 + i;
+		for(size_t i = 0; i < 8; i++) all_fgs[i + 8] = 90 + i;
+
+		fgs = all_fgs;
+		len_fgs = 16;
+	}
+
+	if(argc == 3) {
+		for(size_t i = 0; i < 8; i++) all_bgs[i] = 40 + i;
+		for(size_t i = 0; i < 8; i++) all_bgs[i + 8] = 100 + i;
+
+		engine(chrs, fgs, all_bgs, len_chrs, len_fgs, 16);
+	}
+
+	const char *bgs = argv[3];
+	size_t len_bgs = strlen(bgs);
+
+	if(!len_bgs) {
+		for(size_t i = 0; i < 8; i++) all_bgs[i] = 40 + i;
+		for(size_t i = 0; i < 8; i++) all_bgs[i + 8] = 100 + i;
+
+		bgs = all_bgs;
+		len_bgs = 16;
+	}
+
+	engine(chrs, fgs, bgs, len_chrs, len_fgs, len_bgs);
 }

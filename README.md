@@ -8,11 +8,17 @@ I wanted to make the name a portmanteau of the description. Alas, Sgricon does n
 
 ## Example Output
 
-The following is a screenshot of the output of the `starfield` demo included with the library. It is made using the technology provided by `LSC_buffer.h`.
+The following are screenshots of the output of the (monochrome) `starfield` and (colour) `nebula` demos included with the library. It is made using the technology provided by `LSC_buffer.h`.
 
 ![Starfield Screenshot](images/starfield.png)
 
+<<<<<<< Updated upstream
 ## Building & Running It
+=======
+![Nebula Screenshot](images/nebula.png)
+
+## Building & Running
+>>>>>>> Stashed changes
 
 To compile the code, you can run `make`. This will produce a large number of programs as well as `libScricon.a` which you will need to link other programs with this library. If your goal is to compile your own code, make sure to include the `include` folder from the libScricon source tree in the include path for your program compilation.
 

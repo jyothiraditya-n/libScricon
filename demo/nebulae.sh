@@ -17,6 +17,8 @@
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
 chars=".,+*\`                                                                ";
+fgs="%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za]\`"
+bgs="("
 
 case "$1" in
 "--about")
@@ -52,7 +54,7 @@ case "$1" in
 ;;
 esac
 
-make randfw
-./randfw $(tput cols) $(tput lines) "$chars"
+make randfwcol
+./randfwcol $(tput cols) $(tput lines) "$chars" "$fgs" "$bgs"
 
 exit

@@ -21,14 +21,8 @@
 #define LSC_BUFFER_H 1
 
 #define LSCB_NOCHECKS 0
-
 #define LSCB_ASCII 1
-#define LSCB_ASCII_MIN 0x20
-#define LSCB_ASCII_MAX 0x7E
-
 #define LSCB_IBM437 2
-#define LSCB_IBM437_MIN 0x20
-#define LSCB_IBM437_ILL "\x7F"
 
 #define LSCB_LF "\n"
 #define LSCB_CRLF "\r\n"
@@ -36,14 +30,14 @@
 #ifdef _WIN32
 	#define LSCB_CHARSET LSCB_IBM437
 	#define LSCB_ENDL LSCB_CRLF
-	#define LSCB_USE_ANSI false
 
 #else
 	#define LSCB_CHARSET LSCB_ASCII
 	#define LSCB_ENDL LSCB_LF
-	#define LSCB_USE_ANSI true
 
 #endif
+
+#define LSCB_USE_ANSI true
 
 #define LSCB_HEIGHT 18
 #define LSCB_WIDTH 60
@@ -53,6 +47,7 @@ typedef struct {
 	const char *endl;
 	bool fullwidth;
 	bool use_ansi;
+	bool use_colour;
 
 	size_t height;
 	size_t width;
@@ -67,6 +62,7 @@ extern int LSCb_alloc(LSCb_t *buf);
 extern void LSCb_clear(LSCb_t *buf);
 
 extern int LSCb_set(LSCb_t *buf, size_t x, size_t y, char chr);
+extern int LSCb_setc(LSCb_t *buf, size_t x, size_t y, int fg, int bg);
 extern int LSCb_print(LSCb_t *buf);
 
 #endif

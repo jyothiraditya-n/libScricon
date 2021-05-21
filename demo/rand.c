@@ -21,8 +21,7 @@
 #include <LSC_buffer.h>
 #include <LSC_error.h>
 
-static size_t height;
-static size_t width;
+static char all_chrs[256];
 static LSCb_t buf;
 
 static void about() {
@@ -44,27 +43,29 @@ static void about() {
 	return;
 }
 
-static void builtin() {
+static void engine(const char *chrs, size_t len) {
+	LSCb_init(&buf);
+	LSCb_alloc(&buf);
+	srand(time(NULL));
+
 	for(size_t i = 0; i < buf.width; i++)
 		for(size_t j = 0; j < buf.height; j++)
 	{
-		LSCb_set(&buf, i, j, (char) rand());
+		LSCb_set(&buf, i, j, chrs[rand() % len]);
 	}
 
 	while(1) {
-		LSCb_set(&buf, rand() % width, rand() % height, (char) rand());
+		LSCb_set(&buf, rand() % buf.width,
+			rand() % buf.height,
+			chrs[rand() % len]);
+
 		LSCb_print(&buf);
 	}
 }
 
 static void help(const char *name) {
-	printf("Usage: %s COLS ROWS [CHARS]\n", name);
+	printf("Usage: %s [CHARS]\n", name);
 	printf("       %s OPTION\n\n", name);
-
-	printf("COLS is a mandatory argument specifying the width of the "
-		"physical display in characters. ROWS is a mandatory argument "
-		"specifying the height of the physical display in "
-		"characters.\n\n");
 
 	printf("[CHARS] is the optional list of characters to pick from "
 		"when writing characters randomly to the screen. If not "
@@ -83,58 +84,37 @@ static void help(const char *name) {
 	return;
 }
 
-static void inp_err(const char *name) {
-	fprintf(stderr, "%s: Error: Incorrect arguments.\n\n", name);
-	help(name);
-	exit(1);
-}
-
 int main(int argc, char **argv) {
-	if(argc == 2) {
-		if(!strcmp(argv[1], "--about")) {
-			about();
-			exit(0);
-		}
-
-		if(!strcmp(argv[1], "--help")) {
-			help(argv[0]);
-			exit(0);
-		}
-
-		else inp_err(argv[0]);
+	if(argc > 2) {
+		fprintf(stderr, "%s: Error: Too many arguments.\n\n", argv[0]);
+		help(argv[0]);
+		exit(1);
 	}
 
-	int ret = sscanf(argv[1], "%zu", &width);
-	if(ret != 1) inp_err(argv[0]);
+	if(argc == 1) {
+		for(size_t i = 0; i < 256; i++) all_chrs[i] = i;
+		engine(all_chrs, 256);
+	}
 
-	ret = sscanf(argv[2], "%zu", &height);
-	if(ret != 1) inp_err(argv[0]);
-	height--;
+	if(!strcmp(argv[1], "--about")) {
+		about();
+		exit(0);
+	}
 
-	LSCb_init(&buf);
+	if(!strcmp(argv[1], "--help")) {
+		help(argv[0]);
+		exit(0);
+	}
 
-	buf.height = height;
-	buf.width = width;
-	buf.fullwidth = true;
-
-	LSCb_alloc(&buf);
-	srand(time(NULL));
-
-	if(argc == 3) builtin();
-
-	const char *chrs = argv[3];
+	const char *chrs = argv[1];
 	size_t len = strlen(chrs);
 
-	for(size_t i = 0; i < buf.width; i++)
-		for(size_t j = 0; j < buf.height; j++)
-	{
-		LSCb_set(&buf, i, j, chrs[rand() % len]);
+	if(!len) {
+		for(size_t i = 0; i < 256; i++) all_chrs[i] = i;
+
+		chrs = all_chrs;
+		len = 256;
 	}
 
-	while(1) {
-		LSCb_set(&buf, rand() % buf.width,
-			rand() % buf.height, chrs[rand() % len]);
-
-		LSCb_print(&buf);
-	}
+	engine(chrs, len);
 }

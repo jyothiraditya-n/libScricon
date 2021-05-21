@@ -27,6 +27,7 @@ void LSCb_init(LSCb_t *buf) {
 	buf -> endl = LSCB_ENDL;
 	buf -> fullwidth = false;
 	buf -> use_ansi = LSCB_USE_ANSI;
+	buf -> use_colour = false;
 
 	buf -> height = LSCB_HEIGHT;
 	buf -> width = LSCB_WIDTH;
@@ -34,8 +35,14 @@ void LSCb_init(LSCb_t *buf) {
 }
 
 int LSCb_alloc(LSCb_t *buf) {
+	if(!buf -> height) buf -> height = LSCB_HEIGHT;
+	if(!buf -> width) buf -> width = LSCB_WIDTH;
+
 	size_t endl_len = buf -> fullwidth ? 0 : strlen(buf -> endl);
-	size_t width_eff = buf -> width + endl_len;
+	size_t width_eff;
+
+	if(buf -> use_colour) width_eff = 10 * buf -> width + endl_len;
+	else width_eff = buf -> width + endl_len;
 
 	buf -> data = malloc(buf -> height * width_eff + 1);
 
@@ -49,6 +56,11 @@ int LSCb_alloc(LSCb_t *buf) {
 
 	for(size_t i = 0; i < buf -> height; i++) {
 		for(size_t j = 0; j < buf -> width; j++) {
+			if(buf -> use_colour) {
+				strcpy(data, "\033[37;040m");
+				data += 9;
+			}
+
 			*data = ' ';
 			data++;
 		}
@@ -67,17 +79,17 @@ void LSCb_clear(LSCb_t *buf) {
 	return;
 }
 
-static bool islegal(char chr, int set) {
+static bool islegalchr(char chr, int set) {
 	if(set == LSCB_NOCHECKS) return true;
 
 	else if(set == LSCB_ASCII) {
-		if(chr < LSCB_ASCII_MIN) return false;
-		if(chr > LSCB_ASCII_MAX) return false;
+		if(chr < ' ') return false;
+		if(chr > '~') return false;
 	}
 
 	else if(set == LSCB_IBM437) {
-		if(chr < LSCB_IBM437_MIN) return false;
-		if(strchr(LSCB_IBM437_ILL, chr)) return false;
+		if(chr < ' ') return false;
+		if(chr == 0x7f) return false;
 	}
 
 	return true;
@@ -85,9 +97,47 @@ static bool islegal(char chr, int set) {
 
 int LSCb_set(LSCb_t *buf, size_t x, size_t y, char chr) {
 	if(x >= buf -> width || y >= buf -> height) return LSCE_ILLEGAL;
-	if(!islegal(chr, buf -> charset)) return LSCE_ILLEGAL;
+	if(!islegalchr(chr, buf -> charset)) return LSCE_ILLEGAL;
 
-	buf -> data[x + y * buf -> width_eff] = chr;
+	if(buf -> use_colour) {
+		buf -> data[9 + 10 * x + y * buf -> width_eff] = chr;
+	}
+
+	else buf -> data[x + y * buf -> width_eff] = chr;
+	return LSCE_OK;
+}
+
+static bool islegalfg(int fg) {
+	if(30 <= fg && fg <= 37) return true;
+	if(90 <= fg && fg <= 97) return true;
+	return false;
+}
+
+static bool islegalbg(int bg) {
+	if(40 <= bg && bg <= 47) return true;
+	if(100 <= bg && bg <= 107) return true;
+	return false;
+}
+
+int LSCb_setc(LSCb_t *buf, size_t x, size_t y, int fg, int bg) {
+	if(!buf -> use_colour) return LSCE_ILLEGAL;
+	if(x >= buf -> width || y >= buf -> height) return LSCE_ILLEGAL;
+	if(!islegalfg(fg)) return LSCE_ILLEGAL;
+	if(!islegalbg(bg)) return LSCE_ILLEGAL;
+
+	char chr = buf -> data[9 + 10 * x + y * buf -> width_eff];
+
+	if(bg < 100) {
+		sprintf(buf -> data + 10 * x + y * buf -> width_eff,
+			"\033[%d;0%dm", fg, bg);
+	}
+
+	else {
+		sprintf(buf -> data + 10 * x + y * buf -> width_eff,
+			"\033[%d;%dm", fg, bg);
+	}
+
+	buf -> data[9 + 10 * x + y * buf -> width_eff] = chr;
 	return LSCE_OK;
 }
 
