@@ -1,7 +1,7 @@
 # libScricon: The Simple Graphical Console Library
 Copyright (C) 2021 Jyothiraditya Nellakra
 
-# Pronunciation
+## Pronunciation
 Scricon is pronounced with the _scr-_ of _script_ and the _icon_ of... well... the word _icon_.
 
 The spelling in the international phonetic alphabet is /skɹaɪkən/.
