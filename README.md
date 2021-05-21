@@ -9,3 +9,15 @@ The spelling in the international phonetic alphabet is /skɹaɪkən/.
 ## Etymology
 
 I wanted to make the name a portmanteau of the description. Alas, Sgricon does not a valid sequence of sounds in English make. However, the _graph-_ part of _graphical_ comes from a greek word which could mean 'write', so I replaced it with the _scr_ prefix from latin which is also related to writing, whence the _c_ in _scricon_.
+
+## Building & Running
+
+To compile the code, you can run `make`. This will produce a large number of programs as well as `libScricon.a` which you will need to link other programs with this library. If your goal is to compile your own code, make sure to include the `include` folder from the libScricon source tree in the include path for your program compilation.
+
+If you wish to instead run the programs, you can run `<program> --help` to find the usage details of each of them individually.
+
+When you're done, if you want to clean up after yourself, you can run `make clean`, which will automatically delete all programs, object files, and `libScricon.a`
+
+---
+
+Happy coding! :)
