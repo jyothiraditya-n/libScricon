@@ -12,13 +12,9 @@ The following are screenshots of the output of the (monochrome) `starfield` and 
 
 ![Starfield Screenshot](images/starfield.png)
 
-<<<<<<< Updated upstream
-## Building & Running It
-=======
 ![Nebula Screenshot](images/nebula.png)
 
-## Building & Running
->>>>>>> Stashed changes
+## Building & Running It
 
 To compile the code, you can run `make`. This will produce a large number of programs as well as `libScricon.a` which you will need to link other programs with this library. If your goal is to compile your own code, make sure to include the `include` folder from the libScricon source tree in the include path for your program compilation.
 
