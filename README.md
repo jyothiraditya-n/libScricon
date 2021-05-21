@@ -1,12 +1,8 @@
 # libScricon: The Simple Graphical Console Library
 Copyright (C) 2021 Jyothiraditya Nellakra
 
-## Pronunciation
-Scricon is pronounced with the _scr-_ of _script_ and the _icon_ of... well... the word _icon_.
-
-The spelling in the international phonetic alphabet is /skɹaɪkən/.
-
-## Etymology
+## Pronunciation & Etymology of the Name
+Scricon is pronounced with the _scr-_ of _script_ and the _icon_ of... well... the word _icon_; its representation in the international phonetic alphabet is /skɹaɪkən/.
 
 I wanted to make the name a portmanteau of the description. Alas, Sgricon does not a valid sequence of sounds in English make. However, the _graph-_ part of _graphical_ comes from a greek word which could mean 'write', so I replaced it with the _scr_ prefix from latin which is also related to writing, whence the _c_ in _scricon_.
 
@@ -16,7 +12,7 @@ The following is a screenshot of the output of the `starfield` demo included wit
 
 ![Starfield Screenshot](images/starfield.png)
 
-## Building & Running
+## Building & Running It
 
 To compile the code, you can run `make`. This will produce a large number of programs as well as `libScricon.a` which you will need to link other programs with this library. If your goal is to compile your own code, make sure to include the `include` folder from the libScricon source tree in the include path for your program compilation.
 
