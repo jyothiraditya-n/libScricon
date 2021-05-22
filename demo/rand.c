@@ -83,30 +83,28 @@ static void about() {
 static void refill() {
 	intmax_t lines = imaxabs(scroll_rows);
 
-	if(scroll_rows < 0) {
+	if(scroll_rows < 0)
 		for(size_t i = buf.height - lines; i < buf.height; i++)
-			for(size_t j = 0; j < buf.width; j++)
-		{
-			if(buf.use_colour) LSCb_setall(&buf, j, i,
-				chrs[rand() % len_chrs],
-				(uint8_t) fgs[rand() % len_fgs],
-				(uint8_t) bgs[rand() % len_bgs]);
+		for(size_t j = 0; j < buf.width; j++)
+	{
+		if(buf.use_colour) LSCb_setall(&buf, j, i,
+			chrs[rand() % len_chrs],
+			fgs[rand() % len_fgs],
+			bgs[rand() % len_bgs]);
 
-			else LSCb_set(&buf, j, i, chrs[rand() % len_chrs]);
-		}
+		else LSCb_set(&buf, j, i, chrs[rand() % len_chrs]);
 	}
 
-	else if(scroll_rows > 0) {
+	else if(scroll_rows > 0)
 		for(intmax_t i = 0; i < lines; i++)
-			for(size_t j = 0; j < buf.width; j++)
-		{
-			if(buf.use_colour) LSCb_setall(&buf, j, i,
-				chrs[rand() % len_chrs],
-				(uint8_t) fgs[rand() % len_fgs],
-				(uint8_t) bgs[rand() % len_bgs]);
+		for(size_t j = 0; j < buf.width; j++)
+	{
+		if(buf.use_colour) LSCb_setall(&buf, j, i,
+			chrs[rand() % len_chrs],
+			fgs[rand() % len_fgs],
+			bgs[rand() % len_bgs]);
 
-			else LSCb_set(&buf, j, i, chrs[rand() % len_chrs]);
-		}
+		else LSCb_set(&buf, j, i, chrs[rand() % len_chrs]);
 	}
 }
 
