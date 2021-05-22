@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
-objs = $(patsubst %.c,%.o,$(wildcard src/*.c))
+objs = $(patsubst %.c,%.o,$(wildcard source/*.c))
 demo_objs = $(patsubst %.c,%.o,$(wildcard demo/*.c))
 
 headers = $(wildcard include/*.h)
@@ -47,8 +47,7 @@ $(demos) : % : demo/%.o libScricon.a
 	$(CC) $(CFLAGS) $< -o $@ $(LIBS)
 
 $(demo_shs) : % : demo/%.sh
-	cp $< $@
-	chmod +x $@
+	cp $< $@; chmod +x $@
 
 libScricon.a : $(objs)
 	$(AR) -r libScricon.a $(objs)

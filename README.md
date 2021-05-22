@@ -8,11 +8,11 @@ I wanted to make the name a portmanteau of the description. Alas, Sgricon does n
 
 ## Example Output
 
-The following are screenshots of the output of the (monochrome) `starfield` and (colour) `nebula` demos included with the library. It is made using the technology provided by `LSC_buffer.h`.
+The following are screenshots of the output of the monochrome `starfield` and colour `nebulae` demos included with the library. It is made using the technology provided by `LSC_buffer.h`.
 
-![Starfield Screenshot](images/starfield.png)
+![Starfield & Nebulae Screenshot](image/stars.png)
 
-![Nebula Screenshot](images/nebula.png)
+<sup>The font used in the above image is [Pacifico](https://fonts.google.com/specimen/Pacifico).</sup>
 
 ## Building & Running It
 
