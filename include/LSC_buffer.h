@@ -62,7 +62,10 @@ extern int LSCb_alloc(LSCb_t *buf);
 extern void LSCb_clear(LSCb_t *buf);
 
 extern int LSCb_set(LSCb_t *buf, size_t x, size_t y, char chr);
-extern int LSCb_setc(LSCb_t *buf, size_t x, size_t y, int fg, int bg);
 extern int LSCb_print(LSCb_t *buf);
+
+extern int LSCb_setc(LSCb_t *buf, size_t x, size_t y, int fg, int bg);
+extern int LSCb_setfg(LSCb_t *buf, size_t x, size_t y, int fg);
+extern int LSCb_setbg(LSCb_t *buf, size_t x, size_t y, int bg);
 
 #endif

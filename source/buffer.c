@@ -107,6 +107,21 @@ int LSCb_set(LSCb_t *buf, size_t x, size_t y, char chr) {
 	return LSCE_OK;
 }
 
+int LSCb_print(LSCb_t *buf) {
+	int ret;
+
+	if(buf -> use_ansi) ret = printf("\033[;f%s", buf -> data);
+	else ret = printf("%s", buf -> data);
+
+	if(ret < 0) {
+		if(LSCe_auto) perror("stdlib");
+		LSC_errno = LSC_PRINTF_ERR;
+		return LSCE_NOOP;
+	}
+
+	return LSCE_OK;
+}
+
 static bool islegalfg(int fg) {
 	if(30 <= fg && fg <= 37) return true;
 	if(90 <= fg && fg <= 97) return true;
@@ -127,31 +142,37 @@ int LSCb_setc(LSCb_t *buf, size_t x, size_t y, int fg, int bg) {
 
 	char chr = buf -> data[9 + 10 * x + y * buf -> width_eff];
 
-	if(bg < 100) {
-		sprintf(buf -> data + 10 * x + y * buf -> width_eff,
-			"\033[%d;0%dm", fg, bg);
-	}
+	if(bg < 100) sprintf(buf -> data + 10 * x + y * buf -> width_eff,
+		"\033[%d;0%dm", fg, bg);
 
-	else {
-		sprintf(buf -> data + 10 * x + y * buf -> width_eff,
-			"\033[%d;%dm", fg, bg);
-	}
+	else sprintf(buf -> data + 10 * x + y * buf -> width_eff,
+		"\033[%d;%dm", fg, bg);
 
 	buf -> data[9 + 10 * x + y * buf -> width_eff] = chr;
 	return LSCE_OK;
 }
+extern int LSCb_setfg(LSCb_t *buf, size_t x, size_t y, int fg) {
+	if(!buf -> use_colour) return LSCE_ILLEGAL;
+	if(x >= buf -> width || y >= buf -> height) return LSCE_ILLEGAL;
+	if(!islegalfg(fg)) return LSCE_ILLEGAL;
 
-int LSCb_print(LSCb_t *buf) {
-	int ret;
+	sprintf(buf -> data + 10 * x + y * buf -> width_eff, "\033[%d", fg);
+	buf -> data[4 + 10 * x + y * buf -> width_eff] = ';';
+	return LSCE_OK;
+}
+extern int LSCb_setbg(LSCb_t *buf, size_t x, size_t y, int bg) {
+	if(!buf -> use_colour) return LSCE_ILLEGAL;
+	if(x >= buf -> width || y >= buf -> height) return LSCE_ILLEGAL;
+	if(!islegalbg(bg)) return LSCE_ILLEGAL;
 
-	if(buf -> use_ansi) ret = printf("\033[;f%s", buf -> data);
-	else ret = printf("%s", buf -> data);
+	char chr = buf -> data[9 + 10 * x + y * buf -> width_eff];
 
-	if(ret < 0) {
-		if(LSCe_auto) perror("stdlib");
-		LSC_errno = LSC_PRINTF_ERR;
-		return LSCE_NOOP;
-	}
+	if(bg < 100) sprintf(buf -> data + 5 + 10 * x + y * buf -> width_eff,
+			"0%dm", bg);
 
+	else sprintf(buf -> data + 5 + 10 * x + y * buf -> width_eff,
+			"%dm", bg);
+
+	buf -> data[9 + 10 * x + y * buf -> width_eff] = chr;
 	return LSCE_OK;
 }
