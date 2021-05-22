@@ -31,11 +31,11 @@ CLEAN = $(foreach file,$(files),rm $(file);)
 
 CC ?= gcc
 CFLAGS ?= -L.
-CPPFLAGS ?= -std=c17 -Wall -Wextra -Werror -O3 -I include/
+CPPFLAGS ?= -std=gnu17 -Wall -Wextra -Werror -O3 -I include/
 
 AR ?= ar
 
-LIBS ?= -lScricon
+LIBS ?= -lScricon -lm
 
 $(objs) : %.o : %.c $(headers)
 	$(CC) $(CPPFLAGS) -c $< -o $@

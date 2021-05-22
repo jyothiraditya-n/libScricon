@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
+chrs=".,/:;'!{[(                      ";
+
 case "$1" in
 "-about")
 	echo "  libScricon: The Simple Graphical Console Library"
@@ -64,8 +66,10 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -colour -bgs 40 -width $(tput cols) -height $(tput lines) \
-		-fullwidth -fullheight -delay "$delay"
+	./rand -colour -width $(tput cols) -height $(tput lines) \
+		-chars "$chrs" -fgs 34 36 90 94 -bgs 40 \
+		-fullwidth -fullheight \
+		-delay "$delay" -scroll-rows 0.05 -change 0
 ;;
 
 *)
@@ -84,6 +88,7 @@ case "$1" in
 
 	make rand
 	./rand -no-colour -width $(tput cols) -height $(tput lines) \
-		-fullwidth -fullheight -delay "$delay"
+		-chars "$chrs" -fullwidth -fullheight \
+		-delay "$delay" -scroll-rows 0.05 -change 0
 ;;
 esac

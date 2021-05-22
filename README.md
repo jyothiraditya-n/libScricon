@@ -14,6 +14,10 @@ The following is a screenshot of the output of the `stars` demo included with th
 
 <sup>The font used in the above image is [Pacifico](https://fonts.google.com/specimen/Pacifico).</sup>
 
+And the following is a demonstration of using the 16 available colours from the `chaos` demo. Notably, this demo doesn't set the background colours supported as part of ANSI, since it can seem quite messy even for abject chaos, but you can use them too, if you want.
+
+![Chaos screenshot.](image/colours.png)
+
 ## Building & Running It
 
 To compile the code, you can run `make`. This will produce a large number of programs as well as `libScricon.a` which you will need to link other programs with this library. If your goal is to compile your own code, make sure to include the `include` folder from the libScricon source tree in the include path for your program compilation.

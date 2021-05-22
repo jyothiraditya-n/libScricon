@@ -15,6 +15,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>. */
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stddef.h>
 
 #ifndef LSC_BUFFER_H
@@ -64,8 +65,13 @@ extern void LSCb_clear(LSCb_t *buf);
 extern int LSCb_set(LSCb_t *buf, size_t x, size_t y, char chr);
 extern int LSCb_print(LSCb_t *buf);
 
-extern int LSCb_setc(LSCb_t *buf, size_t x, size_t y, int fg, int bg);
-extern int LSCb_setfg(LSCb_t *buf, size_t x, size_t y, int fg);
-extern int LSCb_setbg(LSCb_t *buf, size_t x, size_t y, int bg);
+extern int LSCb_setcol(LSCb_t *buf, size_t x, size_t y,
+	uint8_t fg, uint8_t bg);
+
+extern int LSCb_setfg(LSCb_t *buf, size_t x, size_t y, uint8_t fg);
+extern int LSCb_setbg(LSCb_t *buf, size_t x, size_t y, uint8_t bg);
+
+extern int LSCb_setall(LSCb_t *buf, size_t x, size_t y,
+	char chr, uint8_t fg, uint8_t bg);
 
 #endif

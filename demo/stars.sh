@@ -17,8 +17,6 @@
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
 chrs=".,+*\`'                                                               ";
-fgs="%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za%Za]\`"
-bgs="("
 
 case "$1" in
 "-about")
@@ -40,28 +38,25 @@ case "$1" in
 ;;
 
 "-help")
-	echo "Usage: $0 [OPTION] [SLOWDOWN]"
+	echo "Usage: $0 [OPTION] [DELAY]"
 	echo ""
 	echo "Valid values for OPTION are:"
 	echo "-about: display the about dialogue."
 	echo "-colour: enable colour support."
 	echo "-help: display this help dialogue."
 	echo ""
-	echo -n "[SLOWDOWN] is an optional integer to change the speed at "
-	echo -n "which the screen will update. Specifically, the number of "
-	echo -n "updates per draw call is the number of characters divided "
-	echo -n "by SLOWDOWN, so the default SLOWDOWN value of 10 means 10% "
-	echo    "of the characters and colours are updated per draw call."
+	echo -n "[DELAY] is the unsigned integer number "
+	echo    "of milliseconds to delay printing"
 	echo ""
 	echo "Happy coding! :)"
 ;;
 
 "-colour")
 	if [[ -z "$2" ]]; then
-		slowdown="10"
+		delay="1"
 
 	elif [ "$2" -eq "$2" ] 2>/dev/null; then
-		slowdown="$2"
+		delay="$2"
 
 	else
 		echo "$0: Error: Incorrect arguments."
@@ -70,16 +65,19 @@ case "$1" in
 		exit 1
 	fi
 
-	make randfw
-	set -x; ./randfw $(tput cols) $(tput lines) "$chrs" "$fgs" "$bgs" "$slowdown"
+	make rand
+	./rand -colour -width $(tput cols) -height $(tput lines) \
+		-chars "$chrs" -fgs 31 33 36 37 90 91 93 96 97 37 90 97 \
+		37 90 97 37 90 97 37 90 97 37 90 97 37 90 97 37 90 97 -bgs 40 \
+		-fullwidth -fullheight -delay "$delay" -change 0.01
 ;;
 
 *)
 	if [[ -z "$1" ]]; then
-		slowdown="10"
+		delay="1"
 
 	elif [ "$1" -eq "$1" ] 2>/dev/null; then
-		slowdown="$1"
+		delay="$1"
 
 	else
 		echo "$0: Error: Incorrect arguments."
@@ -88,7 +86,9 @@ case "$1" in
 		exit 1
 	fi
 
-	make randfw
-	set -x; ./randfw -no-colour $(tput cols) $(tput lines) "$chrs" "$fgs" "$bgs" "$slowdown"
+	make rand
+	./rand -no-colour -width $(tput cols) -height $(tput lines) \
+		-chars "$chrs" -fullwidth -fullheight \
+		-delay "$delay" -change 0.01
 ;;
 esac
