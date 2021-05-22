@@ -8,7 +8,7 @@ I wanted to make the name a portmanteau of the description. Alas, Sgricon does n
 
 ## Example Output
 
-The following is a screenshot of the output of the `stars` demo included with the library, in both monochrome and colour mode. It is made using the technology provided by `LSC_buffer.h`.
+The following is a screenshot of the output of the `stars` demo included with the library, in both monochrome and colour mode. This demo mainly makes use of `LSC_buffer.h`.
 
 ![Stars screenshot.](image/stars.png)
 
