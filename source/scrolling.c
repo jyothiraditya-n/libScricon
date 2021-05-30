@@ -18,7 +18,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <LSC_buffer.h>
+
+#include <libScricon/buffer.h>
 
 static void scroll_up(LSCb_t *buf, intmax_t lines) {
 	for(size_t i = 0; i < buf -> height - lines; i++)

@@ -15,7 +15,7 @@
  * this program. If not, see <https://www.gnu.org/licenses/>. */
 
 #include <stdint.h>
-#include <LSC_buffer.h>
+#include <libScricon/buffer.h>
 
 #ifndef LSC_SCROLLING_H
 #define LSC_SCORLLING_H 1

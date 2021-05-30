@@ -14,43 +14,42 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
-objs = $(patsubst %.c,%.o,$(wildcard source/*.c))
-demo_objs = $(patsubst %.c,%.o,$(wildcard demo/*.c))
-
 headers = $(wildcard include/*.h)
+objs = $(patsubst %.c,%.o,$(wildcard source/*.c))
+
 demos = $(patsubst demo/%.c,%,$(wildcard demo/*.c))
+demo_objs = $(patsubst %.c,%.o,$(wildcard demo/*.c))
 demo_shs += $(patsubst demo/%.sh,%,$(wildcard demo/*.sh))
 
-files = $(foreach file,$(objs),$(wildcard $(file)))
-files += $(foreach file,$(demo_objs),$(wildcard $(file)))
-files += $(foreach file,$(demos),$(wildcard $(file)))
-files += $(foreach file,$(demo_shs),$(wildcard $(file)))
+files = $(foreach file,$(objs) $(demo_objs),$(wildcard $(file)))
+files += $(foreach file,$(demos) $(demo_shs),$(wildcard $(file)))
 files += $(wildcard *.a)
 
 CLEAN = $(foreach file,$(files),rm $(file);)
 
-CC ?= gcc
-CFLAGS ?= -L.
-CPPFLAGS ?= -std=gnu17 -Wall -Wextra -Werror -O3 -I include/
+CFLAGS += -std=gnu17 -Wall -Wextra -Werror -O3
+CFLAGS += -I include/ -I libClame/include/
 
-AR ?= ar
-
-LIBS ?= -lScricon -lm
+libs = libClame/libClame.a libScricon.a
+LD_LIBS ?= -L. -lScricon -lm -L libClame -lClame
 
 $(objs) : %.o : %.c $(headers)
-	$(CC) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(demo_objs) : %.o : %.c $(headers)
-	$(CC) $(CPPFLAGS) -c $< -o $@
+libScricon.a : $(objs)
+	$(AR) -r libScricon.a $(objs)
 
-$(demos) : % : demo/%.o libScricon.a
-	$(CC) $(CFLAGS) $< -o $@ $(LIBS)
+$(demo_objs) : %.o : %.c $(headers) libClame
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(demos) : % : demo/%.o $(libs)
+	$(CC) $< -o $@ $(LD_LIBS)
 
 $(demo_shs) : % : demo/%.sh
 	cp $< $@; chmod +x $@
 
-libScricon.a : $(objs)
-	$(AR) -r libScricon.a $(objs)
+libClame/libClame.a : libClame
+	cd libClame; make libClame.a; cd ..
 
 .DEFAULT_GOAL = all
 .PHONY : all clean

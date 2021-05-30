@@ -16,7 +16,8 @@
 
 #include <threads.h>
 #include <stdio.h>
-#include <LSC_error.h>
+
+#include <libScricon/error.h>
 
 #define MAX_ERR 7
 

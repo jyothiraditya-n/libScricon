@@ -22,9 +22,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <LSC_buffer.h>
-#include <LSC_error.h>
-#include <LSC_scrolling.h>
+
+#include <libClame/args.h>
+#include <libClame/vars.h>
+
+#include <libScricon/buffer.h>
+#include <libScricon/error.h>
+#include <libScricon/scrolling.h>
 
 static const char *name;
 static LSCb_t buf;
@@ -179,7 +183,7 @@ static void engine() {
 }
 
 static void help() {
-	printf("Usage: %s [OPTIONS]\n", name);
+	printf("Usage: %s [OPTIONS]\n\n", name);
 
 	printf("Valid options are:\n");
 	printf("-about: Print the about dialogue.\n");
@@ -228,7 +232,7 @@ static void help() {
 		"screen is not scrolled (between the frames during which it "
 		"is scrolled). (unsigned integer number)\n\n");
 
-	printf("Happy coding :)\n");
+	printf("Happy coding! :)\n");
 	return;
 }
 

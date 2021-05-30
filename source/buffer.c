@@ -20,8 +20,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <LSC_buffer.h>
-#include <LSC_error.h>
+
+#include <libScricon/buffer.h>
+#include <libScricon/error.h>
 
 void LSCb_init(LSCb_t *buf) {
 	buf -> charset = LSCB_CHARSET;
