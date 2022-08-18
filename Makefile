@@ -1,5 +1,5 @@
 # libScricon: The Simple Graphical Console Library
-# Copyright (C) 2021 Jyothiraditya Nellakra
+# Copyright (C) 2021-2022 Jyothiraditya Nellakra
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,7 @@
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
 headers = $(wildcard include/*.h)
-objs = $(patsubst %.c,%.o,$(wildcard source/*.c))
+objs = $(patsubst %.c,%.o,$(wildcard src/*.c))
 
 demos = $(patsubst demo/%.c,%,$(wildcard demo/*.c))
 demo_objs = $(patsubst %.c,%.o,$(wildcard demo/*.c))
@@ -27,8 +27,8 @@ files += $(wildcard *.a)
 
 CLEAN = $(foreach file,$(files),rm $(file);)
 
-CFLAGS += -std=gnu17 -Wall -Wextra -Werror -O3
-CFLAGS += -I include/ -I libClame/include/
+CFLAGS += -std=gnu17 -Wall -Wextra -Wpedantic -O3
+CFLAGS += -I inc/ -I libClame/inc/
 
 libs = libClame/libClame.a libScricon.a
 LD_LIBS ?= -L. -lScricon -lm -L libClame -lClame
@@ -49,7 +49,7 @@ $(demo_shs) : % : demo/%.sh
 	cp $< $@; chmod +x $@
 
 libClame/libClame.a : libClame
-	cd libClame; make libClame.a; cd ..
+	+cd libClame; make libClame.a; cd ..
 
 .DEFAULT_GOAL = all
 .PHONY : all clean
@@ -58,3 +58,4 @@ all : libScricon.a $(demos) $(demo_shs)
 
 clean :
 	$(CLEAN)
+	+cd libClame; make clean; cd ..

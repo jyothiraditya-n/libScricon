@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # libScricon: The Simple Graphical Console Library
-# Copyright (C) 2021 Jyothiraditya Nellakra
+# Copyright (C) 2021-2022 Jyothiraditya Nellakra
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,8 +18,10 @@
 
 case "$1" in
 "-about")
+	echo ""
 	echo "  libScricon: The Simple Graphical Console Library"
-	echo "  Copyright (C) 2021 Jyothiraditya Nellakra"
+	echo "  Copyright (C) 2021-2022 Jyothiraditya Nellakra"
+	echo "  Chaotic Noise Demonstration"
 	echo ""
 	echo "  This program is free software: you can redistribute it and/or modify"
 	echo "  it under the terms of the GNU General Public License as published by"
@@ -33,25 +35,28 @@ case "$1" in
 	echo ""
 	echo "  You should have received a copy of the GNU General Public License"
 	echo "  along with this program.  If not, see <https://www.gnu.org/licenses/>."
+	echo ""
 ;;
 
 "-help")
-	echo "Usage: $0 [OPTION] [DELAY]"
 	echo ""
-	echo "Valid values for OPTION are:"
-	echo "-about: display the about dialogue."
-	echo "-colour: enable colour support."
-	echo "-help: display this help dialogue."
+	echo "  Usage: $0 [OPTION] [DELAY]"
 	echo ""
-	echo -n "[DELAY] is the unsigned integer number "
-	echo    "of milliseconds to delay printing"
+	echo "  Valid options are:"
+	echo "    -about   display the about dialogue."
+	echo "    -colour  enable colour support."
+	echo "    -help    display this help dialogue."
 	echo ""
-	echo "Happy coding! :)"
+	echo "  Note: [DELAY] is the unsigned integer number of milliseconds to delay"
+	echo "        printing."
+	echo ""
+	echo "  Happy coding! :)"
+	echo ""
 ;;
 
 "-colour")
 	if [[ -z "$2" ]]; then
-		delay="1"
+		delay="0"
 
 	elif [ "$2" -eq "$2" ] 2>/dev/null; then
 		delay="$2"
@@ -64,13 +69,12 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -colour -bgs 40 -width $(tput cols) -height $(tput lines) \
-		-fullwidth -fullheight -delay "$delay"
+	./rand -C -b 0 -d "$delay"
 ;;
 
 *)
 	if [[ -z "$1" ]]; then
-		delay="1"
+		delay="0"
 
 	elif [ "$1" -eq "$1" ] 2>/dev/null; then
 		delay="$1"
@@ -83,7 +87,6 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -no-colour -width $(tput cols) -height $(tput lines) \
-		-fullwidth -fullheight -delay "$delay"
+	./rand -b 0 -d "$delay"
 ;;
 esac

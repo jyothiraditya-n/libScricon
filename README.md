@@ -1,5 +1,5 @@
 # libScricon: The Simple Graphical Console Library
-Copyright (C) 2021 Jyothiraditya Nellakra
+Copyright (C) 2021-2022 Jyothiraditya Nellakra
 
 ## Pronunciation & Etymology of the Name
 Scricon is pronounced with the _scr-_ of _script_ and the _icon_ of... well... the word _icon_; its representation in the international phonetic alphabet is /skɹaɪkən/.

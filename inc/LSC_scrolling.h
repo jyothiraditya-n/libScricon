@@ -1,5 +1,5 @@
 /* libScricon: The Simple Graphical Console Library
- * Copyright (C) 2021 Jyothiraditya Nellakra
+ * Copyright (C) 2021-2022 Jyothiraditya Nellakra
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,7 +15,8 @@
  * this program. If not, see <https://www.gnu.org/licenses/>. */
 
 #include <stdint.h>
-#include <libScricon/buffer.h>
+
+#include <LSC_buffer.h>
 
 #ifndef LSC_SCROLLING_H
 #define LSC_SCORLLING_H 1

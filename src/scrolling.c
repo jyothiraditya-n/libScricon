@@ -1,5 +1,5 @@
 /* libScricon: The Simple Graphical Console Library
- * Copyright (C) 2021 Jyothiraditya Nellakra
+ * Copyright (C) 2021-2022 Jyothiraditya Nellakra
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -19,21 +19,20 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <libScricon/buffer.h>
+#include <LSC_buffer.h>
 
 static void scroll_up(LSCb_t *buf, intmax_t lines) {
-	for(size_t i = 0; i < buf -> height - lines; i++)
-		for(size_t j = 0; j < buf -> width_eff; j++)
-	{
-		buf -> data[j + i * buf -> width_eff]
-		= buf -> data[j + (i + lines) * buf -> width_eff];
+	for(size_t i = 0; i < buf -> height - lines; i++) {
+		memcpy(buf -> data + buf -> chwidth * i * buf -> width,
+			buf -> data + buf -> chwidth * (i + lines) * buf -> width,
+			buf -> chwidth * buf -> width);
 	}
 
 	for(size_t i = buf -> height - lines; i < buf -> height; i++)
 		for(size_t j = 0; j < buf -> width; j++)
 	{
-		if(buf -> use_colour) LSCb_setall(buf, j, i, ' ', 37, 40);
-		else LSCb_set(buf, j, i, ' ');
+		memcpy(buf -> data + buf -> chwidth * (i * buf -> width + j),
+			LSCb_cch, buf -> chwidth);
 	}
 }
 
@@ -46,19 +45,16 @@ void LSC_scrollv(LSCb_t *buf, intmax_t lines) {
 	}
 
 	lines = imaxabs(lines);
-	for(intmax_t i = buf -> height - 1; i >= lines; i--)
-		for(size_t j = 0; j < buf -> width_eff; j++)
-	{
-		buf -> data[j + i * buf -> width_eff]
-		= buf -> data[j + (i - lines) * buf -> width_eff];
+	for(intmax_t i = buf -> height - 1; i >= lines; i--) {
+		memcpy(buf -> data + buf -> chwidth * i * buf -> width,
+			buf -> data + buf -> chwidth * (i - lines) * buf -> width,
+			buf -> chwidth * buf -> width);
 	}
 
 	for(intmax_t i = 0; i < lines; i++)
 		for(size_t j = 0; j < buf -> width; j++)
 	{
-		if(buf -> use_colour) LSCb_setall(buf, j, i, ' ', 37, 40);
-		else LSCb_set(buf, j, i, ' ');
+		memcpy(buf -> data + buf -> chwidth * (i * buf -> width + j),
+			LSCb_cch, buf -> chwidth);
 	}
-
-	return;
 }

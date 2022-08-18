@@ -1,5 +1,5 @@
 /* libScricon: The Simple Graphical Console Library
- * Copyright (C) 2021 Jyothiraditya Nellakra
+ * Copyright (C) 2021-2022 Jyothiraditya Nellakra
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,25 +15,25 @@
  * this program. If not, see <https://www.gnu.org/licenses/>. */
 
 #include <threads.h>
+#include <stdbool.h>
 #include <stdio.h>
 
-#include <libScricon/error.h>
+#include <LSC_error.h>
 
 #define MAX_ERR 7
 
-bool LSCe_auto = false;
-
+bool LSCe_auto = true;
 thread_local int LSC_errno;
 
 static const char *errors[MAX_ERR + 1] = {
-	"Unknown error: 0",
-	"Memory allocation error: 1",
-	"Mutex initialisation error: 2",
-	"Mutex locking error: 3",
-	"Mutex unlocking error: 4",
-	"Thread creation error: 5",
-	"Thread joining error: 6",
-	"Error printing data: 7"
+	"Unknown error.",
+	"Memory allocation error.",
+	"Mutex initialisation error.",
+	"Mutex locking error.",
+	"Mutex unlocking error.",
+	"Thread creation error.",
+	"Thread joining error.",
+	"Error printing data."
 };
 
 const char *LSC_strerror(int err) {

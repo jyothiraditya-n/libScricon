@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # libScricon: The Simple Graphical Console Library
-# Copyright (C) 2021 Jyothiraditya Nellakra
+# Copyright (C) 2021-2022 Jyothiraditya Nellakra
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -18,8 +18,10 @@
 
 case "$1" in
 "-about")
+	echo ""
 	echo "  libScricon: The Simple Graphical Console Library"
-	echo "  Copyright (C) 2021 Jyothiraditya Nellakra"
+	echo "  Copyright (C) 2021-2022 Jyothiraditya Nellakra"
+	echo "  Waving Grass Demonstration"
 	echo ""
 	echo "  This program is free software: you can redistribute it and/or modify"
 	echo "  it under the terms of the GNU General Public License as published by"
@@ -33,20 +35,23 @@ case "$1" in
 	echo ""
 	echo "  You should have received a copy of the GNU General Public License"
 	echo "  along with this program.  If not, see <https://www.gnu.org/licenses/>."
+	echo ""
 ;;
 
 "-help")
-	echo "Usage: $0 [OPTION] [DELAY]"
 	echo ""
-	echo "Valid values for OPTION are:"
-	echo "-about: display the about dialogue."
-	echo "-colour: enable colour support."
-	echo "-help: display this help dialogue."
+	echo "  Usage: $0 [OPTION] [DELAY]"
 	echo ""
-	echo -n "[DELAY] is the unsigned integer number "
-	echo    "of milliseconds to delay printing"
+	echo "  Valid options are:"
+	echo "    -about   display the about dialogue."
+	echo "    -colour  enable colour support."
+	echo "    -help    display this help dialogue."
 	echo ""
-	echo "Happy coding! :)"
+	echo "  Note: [DELAY] is the unsigned integer number of milliseconds to delay"
+	echo "        printing."
+	echo ""
+	echo "  Happy coding! :)"
+	echo ""
 ;;
 
 "-colour")
@@ -65,8 +70,7 @@ case "$1" in
 
 	make rand
 	./rand -colour -width $(tput cols) -height $(tput lines) \
-		-chars "_.,-/" -fgs 32 33 92 93 -bgs 40 \
-		-fullwidth -fullheight -delay "$delay"
+		-chars "_.,-/" -fgs 32 33 92 93 -bgs 40 -delay "$delay"
 ;;
 
 *)
@@ -85,6 +89,6 @@ case "$1" in
 
 	make rand
 	./rand -no-colour -width $(tput cols) -height $(tput lines) \
-		-chars "_.,-/" -fullwidth -fullheight -delay "$delay"
+		-chars "_.,-/" -delay "$delay"
 ;;
 esac
