@@ -140,3 +140,15 @@ void LSCb_setall(LSCb_t *buf, size_t x, size_t y,
 
 	buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1] = chr;
 }
+
+extern size_t LSCb_getx(LSCb_t *buf, double x) {
+	const double width = buf -> width % 2? buf -> width: buf -> width - 1;
+	return (width / 2) + x * (width / 2);
+}
+
+extern size_t LSCb_gety(LSCb_t *buf, double y) {
+	const double height = buf -> height % 2?
+		buf -> height: buf -> height - 1;
+		
+	return (height / 2) + x * (height / 2);
+}

@@ -52,4 +52,7 @@ extern void LSCb_setbg(LSCb_t *buf, size_t x, size_t y, uint8_t bg);
 extern void LSCb_setall(LSCb_t *buf, size_t x, size_t y,
 	char chr, uint8_t fg, uint8_t bg);
 
+extern size_t LSCb_getx(LSCb_t *buf, double x);
+extern size_t LSCb_gety(LSCb_t *buf, double y);
+
 #endif
