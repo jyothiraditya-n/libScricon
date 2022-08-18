@@ -149,6 +149,6 @@ extern size_t LSCb_getx(LSCb_t *buf, double x) {
 extern size_t LSCb_gety(LSCb_t *buf, double y) {
 	const double height = buf -> height % 2?
 		buf -> height: buf -> height - 1;
-		
-	return (height / 2) + x * (height / 2);
+
+	return (height / 2) + y * (height / 2);
 }
