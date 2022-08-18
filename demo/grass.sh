@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
+fgs="34 70 106 142 178 214 40 76 112 148 184 46 82 118 154 190 226"
+
 case "$1" in
 "-about")
 	echo ""
@@ -56,7 +58,7 @@ case "$1" in
 
 "-colour")
 	if [[ -z "$2" ]]; then
-		delay="1"
+		delay="0"
 
 	elif [ "$2" -eq "$2" ] 2>/dev/null; then
 		delay="$2"
@@ -69,13 +71,12 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -colour -width $(tput cols) -height $(tput lines) \
-		-chars "_.,-/" -fgs 32 33 92 93 -bgs 40 -delay "$delay"
+	./rand -Cc "_.,-/" -f $fgs -b 22 -d "$delay"
 ;;
 
 *)
 	if [[ -z "$1" ]]; then
-		delay="1"
+		delay="0"
 
 	elif [ "$1" -eq "$1" ] 2>/dev/null; then
 		delay="$1"
@@ -88,7 +89,6 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -no-colour -width $(tput cols) -height $(tput lines) \
-		-chars "_.,-/" -delay "$delay"
+	./rand -c "_.,-/" -d "$delay"
 ;;
 esac

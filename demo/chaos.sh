@@ -69,7 +69,7 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -C -b 0 -d "$delay"
+	./rand -Cb 0 -d "$delay"
 ;;
 
 *)

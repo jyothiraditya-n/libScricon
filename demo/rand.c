@@ -42,9 +42,8 @@ static LSCb_t buffer;
 static struct termios cooked, raw;
 static size_t height, width;
 
-static size_t len_chrs = '~' - ' ' + 1;
-static char chrs[4096] = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL"
-	"MNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+static size_t len_chrs;
+static char chrs[256];
 
 static size_t len_fgs;
 static uint8_t fgs[256];
@@ -161,6 +160,7 @@ int main(int argc, char **argv) {
 		exit(3);
 	}
 
+	printf("\033[?25l");
 	LSCb_init(&buffer);
 
 	buffer.colour = colour;
@@ -171,6 +171,7 @@ int main(int argc, char **argv) {
 	if(ret != LSCE_OK) {
 		tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
 		puts("Error initialising libScricon.");
+		printf("\033[?25h");
 		exit(4);
 	}
 
@@ -262,7 +263,7 @@ static void init(int argc, char **argv) {
 
 	LCv_t *var = LCv_new();
 	var -> id = "chrs";
-	var -> fmt = "%4095c";
+	var -> fmt = "%95c";
 	var -> data = chrs;
 
 	arg = LCa_new();
@@ -330,8 +331,8 @@ static void init(int argc, char **argv) {
 
 	var = LCv_new();
 	var -> id = "scroll_rows";
-	var -> fmt = "%" SCNiMAX;
-	var -> data = &scroll_rows;
+	var -> fmt = "%lf";
+	var -> data = &scroll;
 
 	arg = LCa_new();
 	arg -> long_flag = "scroll-rows";
@@ -352,6 +353,10 @@ static void init(int argc, char **argv) {
 	if(ret != LCA_OK) help(1);
 
 	len_chrs = strlen(chrs);
+	if(!len_chrs) {
+		for(uint8_t i = ' '; i <= '~'; i++) chrs[i - ' '] = i;
+		len_chrs = '~' - ' ' + 1;
+	}
 
 	if(!len_fgs) {
 		for(size_t i = 0; i < 256; i++) fgs[i] = i;

@@ -17,6 +17,8 @@
 # this program. If not, see <https://www.gnu.org/licenses/>.
 
 chrs=".,/:;'!{[(                      ";
+fgs="17 18 19 20 21 25 26 27 32 33";
+bgs="232 233 234"
 
 case "$1" in
 "-about")
@@ -57,7 +59,7 @@ case "$1" in
 
 "-colour")
 	if [[ -z "$2" ]]; then
-		delay="1"
+		delay="0"
 
 	elif [ "$2" -eq "$2" ] 2>/dev/null; then
 		delay="$2"
@@ -70,14 +72,12 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -colour -width $(tput cols) -height $(tput lines) \
-		-chars "$chrs" -fgs 34 36 90 94 -bgs 40 \
-		-delay "$delay" -scroll-rows 0.05 -change 0
+	./rand -Cc "$chrs" -f $fgs -b $bgs -d "$delay" -s 0.05 -x 0
 ;;
 
 *)
 	if [[ -z "$1" ]]; then
-		delay="1"
+		delay="0"
 
 	elif [ "$1" -eq "$1" ] 2>/dev/null; then
 		delay="$1"
@@ -90,7 +90,6 @@ case "$1" in
 	fi
 
 	make rand
-	./rand -no-colour -width $(tput cols) -height $(tput lines) \
-		-chars "$chrs" -delay "$delay" -scroll-rows 0.05 -change 0
+	./rand -c "$chrs" -d "$delay" -s 0.05 -x 0
 ;;
 esac
