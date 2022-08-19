@@ -55,4 +55,10 @@ extern void LSCb_setall(LSCb_t *buf, size_t x, size_t y,
 extern size_t LSCb_getx(LSCb_t *buf, double x);
 extern size_t LSCb_gety(LSCb_t *buf, double y);
 
+extern void LSCb_sets(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setcols(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setfgs(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setbgs(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setalls(LSCb_t *buf, size_t x, size_t y, const char *data);
+
 #endif

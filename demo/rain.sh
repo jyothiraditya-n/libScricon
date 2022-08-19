@@ -71,8 +71,8 @@ case "$1" in
 		exit 1
 	fi
 
-	make rand
-	./rand -Cc "$chrs" -f $fgs -b $bgs -d "$delay" -s 0.05 -x 0
+	make rand_chars
+	./rand_chars -Cc "$chrs" -f $fgs -b $bgs -d "$delay" -s 0.05 -x 0
 ;;
 
 *)
@@ -89,7 +89,7 @@ case "$1" in
 		exit 1
 	fi
 
-	make rand
-	./rand -c "$chrs" -d "$delay" -s 0.05 -x 0
+	make rand_chars
+	./rand_chars -c "$chrs" -d "$delay" -s 0.05 -x 0
 ;;
 esac

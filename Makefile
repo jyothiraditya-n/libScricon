@@ -27,23 +27,25 @@ files += $(wildcard *.a)
 
 CLEAN = $(foreach file,$(files),rm $(file);)
 
-CFLAGS += -std=gnu17 -Wall -Wextra -Wpedantic -O3
-CFLAGS += -I inc/ -I libClame/inc/
+CPPFLAGS += -std=gnu17 -Wall -Wextra -Wpedantic -O0 -g
+CPPFLAGS += -I inc/ -I libClame/inc/
+
+CFLAGS += -std=gnu17 -O0 -g
 
 libs = libClame/libClame.a libScricon.a
 LD_LIBS ?= -L. -lScricon -lm -L libClame -lClame
 
 $(objs) : %.o : %.c $(headers)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) -c $< -o $@
 
 libScricon.a : $(objs)
 	$(AR) -r libScricon.a $(objs)
 
-$(demo_objs) : %.o : %.c $(headers) libClame
-	$(CC) $(CFLAGS) -c $< -o $@
+$(demo_objs) : %.o : %.c $(headers)
+	$(CC) $(CPPFLAGS) -c $< -o $@
 
 $(demos) : % : demo/%.o $(libs)
-	$(CC) $< -o $@ $(LD_LIBS)
+	$(CC) $(CFLAGS) $< -o $@ $(LD_LIBS)
 
 $(demo_shs) : % : demo/%.sh
 	cp $< $@; chmod +x $@

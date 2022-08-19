@@ -34,6 +34,7 @@
 
 #include <LSC_buffer.h>
 #include <LSC_error.h>
+#include <LSC_lines.h>
 #include <LSC_scrolling.h>
 
 static const char *name;
@@ -64,30 +65,6 @@ static size_t scroll_delay;
 static void init(int argc, char **argv);
 static void on_interrupt(int signum);
 
-static void refill() {
-	intmax_t lines = imaxabs(scroll_rows);
-
-	if(scroll_rows < 0)
-		for(size_t i = buffer.height - lines; i < buffer.height; i++)
-		for(size_t j = 0; j < buffer.width; j++)
-	{
-		if(colour) LSCb_setall(&buffer, j, i, chrs[rand() % len_chrs],
-			fgs[rand() % len_fgs], bgs[rand() % len_bgs]);
-
-		else LSCb_set(&buffer, j, i, chrs[rand() % len_chrs]);
-	}
-
-	else if(scroll_rows > 0)
-		for(intmax_t i = 0; i < lines; i++)
-		for(size_t j = 0; j < buffer.width; j++)
-	{
-		if(colour) LSCb_setall(&buffer, j, i, chrs[rand() % len_chrs],
-			fgs[rand() % len_fgs], bgs[rand() % len_bgs]);
-
-		else LSCb_set(&buffer, j, i, chrs[rand() % len_chrs]);
-	}
-}
-
 static void mkdelay() {
 	struct timespec ts;
 	int ret;
@@ -106,23 +83,24 @@ static void engine() {
 	LSCb_print(&buffer, 1);
 	mkdelay();
 
+	size_t x1 = rand() % buffer.width, x2 = rand() % buffer.width;
+	size_t y1 = rand() % buffer.height, y2 = rand() % buffer.height;
+
 	for(size_t i = 0; i < count; i++) {
-		if(colour && len_fgs > 1) LSCb_setfg(&buffer,
-			rand() % buffer.width, rand() % buffer.height,
+		if(colour && len_fgs) LSCl_setfg(&buffer, x1, y1, x2, y2,
 			fgs[rand() % len_fgs]);
 
-		if(colour && len_bgs > 1) LSCb_setbg(&buffer,
-			rand() % buffer.width, rand() % buffer.height,
+		if(colour && len_bgs) LSCl_setbg(&buffer, x1, y1, x2, y2,
 			bgs[rand() % len_bgs]);
 
-		if(len_chrs > 1) LSCb_set(&buffer,
-			rand() % buffer.width, rand() % buffer.height,
+		if(len_chrs) LSCl_set(&buffer, x1, y1, x2, y2,
 			chrs[rand() % len_chrs]);
+
+		else LSCl_draw(&buffer, x1, y1, x2, y2);
 	}
 
 	if(step == scroll_delay) {
 		LSC_scrollv(&buffer, scroll_rows);
-		refill();
 		step = 0;
 	}
 
@@ -176,31 +154,19 @@ int main(int argc, char **argv) {
 	}
 
 	srand(time(NULL));
-
-	for(size_t i = 0; i < buffer.width; i++)
-		for(size_t j = 0; j < buffer.height; j++)
-	{
-		if(colour) LSCb_setall(&buffer, i, j,
-			chrs[rand() % len_chrs],
-			fgs[rand() % len_fgs],
-			bgs[rand() % len_bgs]);
-
-		else LSCb_set(&buffer, i, j, chrs[rand() % len_chrs]);
-	}
-
 	scroll_rows = buffer.height * scroll;
 	while(running) engine();
 
 	tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
 	printf("\033[?25h");
-	return 0;	
+	return 0;
 }
 
 static void about() {
 	putchar('\n');
 	puts("  libScricon: The Simple Graphical Console Library");
 	puts("  Copyright (C) 2021-2022 Jyothiraditya Nellakra");
-	puts("  Random Noise Generator\n");
+	puts("  Random Line Generator\n");
 
 	puts("  This program is free software: you can redistribute it and/or modify");
 	puts("  it under the terms of the GNU General Public License as published by");
@@ -232,8 +198,8 @@ static void help(int ret) {
 
 	puts("    -C, --colour            enable colour output");
 	puts("    -d, --delay MILLISECS   the length of time to delay printing");
-	puts("    -x, --change FRAC       the number of changes to make as a fraction of the");
-	puts("                            total number of charcaters.\n");
+	puts("    -x, --change FRAC       the number of lines to draw as a fraction of the");
+	puts("                            total number of characters.\n");
 
 	puts("    -s, --scroll-rows ROWS  number of rows to scroll up (if negative) or down");
 	puts("                            (if positive) as a fraction of the screen height.");
@@ -251,112 +217,56 @@ static void help_flag() {
 }
 
 static void init(int argc, char **argv) {
-	LCa_t *arg = LCa_new();
-	arg -> long_flag = "about";
-	arg -> short_flag = 'a';
-	arg -> pre = about;
+	LCa_t *arg = LCa_new(); arg -> long_flag = "about";
+	arg -> short_flag = 'a'; arg -> pre = about;
+	arg = LCa_new(); arg -> long_flag = "help";
+	arg -> short_flag = 'h'; arg -> pre = help_flag;
 
-	arg = LCa_new();
-	arg -> long_flag = "help";
-	arg -> short_flag = 'h';
-	arg -> pre = help_flag;
+	LCv_t *var = LCv_new(); var -> id = "chrs";
+	var -> fmt = "%95c"; var -> data = chrs;
+	arg = LCa_new(); arg -> long_flag = "chrs";
+	arg -> short_flag = 'c'; arg -> var = var;
 
-	LCv_t *var = LCv_new();
-	var -> id = "chrs";
-	var -> fmt = "%95c";
-	var -> data = chrs;
+	var = LCv_new(); var -> id = "fgs"; var -> fmt = "%" SCNu8;
+	var -> data = fgs; var -> len = &len_fgs; var -> min_len = 0;
+	var -> max_len = 256; var -> size = sizeof(uint8_t);
+	arg = LCa_new(); arg -> long_flag = "fgs";
+	arg -> short_flag = 'f'; arg -> var = var;
 
-	arg = LCa_new();
-	arg -> long_flag = "chrs";
-	arg -> short_flag = 'c';
-	arg -> var = var;
+	var = LCv_new(); var -> id = "bgs"; var -> fmt = "%" SCNu8;
+	var -> data = bgs; var -> len = &len_bgs; var -> min_len = 0;
+	var -> max_len = 256; var -> size = sizeof(uint8_t);
+	arg = LCa_new(); arg -> long_flag = "bgs";
+	arg -> short_flag = 'b'; arg -> var = var;
 
-	var = LCv_new();
-	var -> id = "fgs";
-	var -> fmt = "%" SCNu8;
-	var -> data = fgs;
-	var -> len = &len_fgs;
-	var -> min_len = 0;
-	var -> max_len = 256;
-	var -> size = sizeof(uint8_t);
+	var = LCv_new(); var -> id = "colour"; var -> data = &colour;
+	arg = LCa_new(); arg -> long_flag = "colour"; arg -> short_flag = 'C';
+	arg -> var = var; arg -> value = true;
 
-	arg = LCa_new();
-	arg -> long_flag = "fgs";
-	arg -> short_flag = 'f';
-	arg -> var = var;
+	var = LCv_new(); var -> id = "delay";
+	var -> fmt = "%zu"; var -> data = &delay;
+	arg = LCa_new(); arg -> long_flag = "delay";
+	arg -> short_flag = 'd'; arg -> var = var;
 
-	var = LCv_new();
-	var -> id = "bgs";
-	var -> fmt = "%" SCNu8;
-	var -> data = bgs;
-	var -> len = &len_bgs;
-	var -> min_len = 0;
-	var -> max_len = 256;
-	var -> size = sizeof(uint8_t);
+	var = LCv_new(); var -> id = "change";
+	var -> fmt = "%lf"; var -> data = &change;
+	arg = LCa_new(); arg -> long_flag = "change";
+	arg -> short_flag = 'x'; arg -> var = var;
 
-	arg = LCa_new();
-	arg -> long_flag = "bgs";
-	arg -> short_flag = 'b';
-	arg -> var = var;
+	var = LCv_new(); var -> id = "scroll_rows";
+	var -> fmt = "%lf"; var -> data = &scroll;
+	arg = LCa_new(); arg -> long_flag = "scroll-rows";
+	arg -> short_flag = 's'; arg -> var = var;
 
-	var = LCv_new();
-	var -> id = "colour";
-	var -> data = &colour;
-
-	arg = LCa_new();
-	arg -> long_flag = "colour";
-	arg -> short_flag = 'C';
-	arg -> var = var;
-	arg -> value = true;
-
-	var = LCv_new();
-	var -> id = "delay";
-	var -> fmt = "%zu";
-	var -> data = &delay;
-
-	arg = LCa_new();
-	arg -> long_flag = "delay";
-	arg -> short_flag = 'd';
-	arg -> var = var;
-
-	var = LCv_new();
-	var -> id = "change";
-	var -> fmt = "%lf";
-	var -> data = &change;
-
-	arg = LCa_new();
-	arg -> long_flag = "change";
-	arg -> short_flag = 'x';
-	arg -> var = var;
-
-	var = LCv_new();
-	var -> id = "scroll_rows";
-	var -> fmt = "%lf";
-	var -> data = &scroll;
-
-	arg = LCa_new();
-	arg -> long_flag = "scroll-rows";
-	arg -> short_flag = 's';
-	arg -> var = var;
-
-	var = LCv_new();
-	var -> id = "scroll_delay";
-	var -> fmt = "%zu";
-	var -> data = &scroll_delay;
-
-	arg = LCa_new();
-	arg -> long_flag = "scroll-delay";
-	arg -> short_flag = 'S';
-	arg -> var = var;
+	var = LCv_new(); var -> id = "scroll_delay";
+	var -> fmt = "%zu"; var -> data = &scroll_delay;
+	arg = LCa_new(); arg -> long_flag = "scroll-delay";
+	arg -> short_flag = 'S'; arg -> var = var;
 
 	int ret = LCa_read(argc, argv);
 	if(ret != LCA_OK) help(1);
 
 	len_chrs = strlen(chrs);
-	if(!len_chrs) {
-		for(uint8_t i = ' '; i <= '~'; i++) chrs[i - ' '] = i;
-		len_chrs = '~' - ' ' + 1;
-	}
 
 	if(!len_fgs) {
 		for(size_t i = 0; i < 256; i++) fgs[i] = i;

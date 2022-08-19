@@ -68,8 +68,8 @@ case "$1" in
 		exit 1
 	fi
 
-	make rand
-	./rand -Cb 0 -d "$delay"
+	make rand_chars
+	./rand_chars -Cb 0 -d "$delay"
 ;;
 
 *)
@@ -86,7 +86,7 @@ case "$1" in
 		exit 1
 	fi
 
-	make rand
-	./rand -b 0 -d "$delay"
+	make rand_chars
+	./rand_chars -b 0 -d "$delay"
 ;;
 esac

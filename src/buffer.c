@@ -108,37 +108,37 @@ int LSCb_print(LSCb_t *buf, size_t y) {
 }
 
 void LSCb_setcol(LSCb_t *buf, size_t x, size_t y, uint8_t fg, uint8_t bg) {
-	char chr = buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1];
+	char chr = buf -> data[23 * (x + y * buf -> width) + 22];
 
-	sprintf(buf -> data + buf -> chwidth * (x + y * buf -> width),
+	sprintf(buf -> data + 23 * (x + y * buf -> width),
 		"\033[48;5;%03um\033[38;5;%03um", bg, fg);
 
-	buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1] = chr;
+	buf -> data[23 * (x + y * buf -> width) + 22] = chr;
 }
 
 void LSCb_setfg(LSCb_t *buf, size_t x, size_t y, uint8_t fg) {
-	char chr = buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1];
+	char chr = buf -> data[23 * (x + y * buf -> width) + 22];
 
-	sprintf(buf -> data + buf -> chwidth * (x + y * buf -> width) + 11,
+	sprintf(buf -> data + 23 * (x + y * buf -> width) + 11,
 		"\033[38;5;%03um", fg);
 
-	buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1] = chr;
+	buf -> data[23 * (x + y * buf -> width) + 22] = chr;
 }
 
 void LSCb_setbg(LSCb_t *buf, size_t x, size_t y, uint8_t bg) {
-	sprintf(buf -> data + buf -> chwidth * (x + y * buf -> width),
+	sprintf(buf -> data + 23 * (x + y * buf -> width),
 		"\033[48;5;%03um", bg);
 
-	buf -> data[buf -> chwidth * (x + y * buf -> width) + 11] = '\033';
+	buf -> data[23 * (x + y * buf -> width) + 11] = '\033';
 }
 
 void LSCb_setall(LSCb_t *buf, size_t x, size_t y,
 	char chr, uint8_t fg, uint8_t bg)
 {
-	sprintf(buf -> data + buf -> chwidth * (x + y * buf -> width),
+	sprintf(buf -> data + 23 * (x + y * buf -> width),
 		"\033[48;5;%03um\033[38;5;%03um", bg, fg);
 
-	buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1] = chr;
+	buf -> data[23 * (x + y * buf -> width) + 22] = chr;
 }
 
 extern size_t LSCb_getx(LSCb_t *buf, double x) {
@@ -151,4 +151,24 @@ extern size_t LSCb_gety(LSCb_t *buf, double y) {
 		buf -> height: buf -> height - 1;
 
 	return (height / 2) + y * (height / 2);
+}
+
+extern void LSCb_sets(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1] = data[0];
+}
+
+void LSCb_setcols(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	memcpy(buf -> data + 23 * (x + y * buf -> width), data, 22);
+}
+
+void LSCb_setfgs(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	memcpy(buf -> data + 23 * (x + y * buf -> width) + 11, data, 11);
+}
+
+void LSCb_setbgs(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	memcpy(buf -> data + 23 * (x + y * buf -> width), data, 11);
+}
+
+void LSCb_setalls(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	memcpy(buf -> data + 23 * (x + y * buf -> width), data, 23);
 }
