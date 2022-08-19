@@ -37,35 +37,35 @@
 #include <LSC_lines.h>
 #include <LSC_scrolling.h>
 
-static const char *name;
-static LSCb_t buffer;
+const char *name;
+LSCb_t buffer;
 
-static struct termios cooked, raw;
-static size_t height, width;
+struct termios cooked, raw;
+size_t height, width;
 
-static size_t len_chrs;
-static char chrs[256];
+size_t len_chrs;
+char chrs[256];
 
-static size_t len_fgs;
-static uint8_t fgs[256];
+size_t len_fgs;
+uint8_t fgs[256];
 
-static size_t len_bgs;
-static uint8_t bgs[256];
+size_t len_bgs;
+uint8_t bgs[256];
 
-static bool colour;
-static bool running = true;
+bool colour;
+bool running = true;
 
-static size_t delay = 1;
-static double change = 0.1;
+size_t delay = 1;
+double change = 0.1;
 
-static double scroll;
-static intmax_t scroll_rows;
-static size_t scroll_delay;
+double scroll;
+intmax_t scroll_rows;
+size_t scroll_delay;
 
-static void init(int argc, char **argv);
-static void on_interrupt(int signum);
+void init(int argc, char **argv);
+void on_interrupt(int signum);
 
-static void mkdelay() {
+void mkdelay() {
 	struct timespec ts;
 	int ret;
 
@@ -76,8 +76,8 @@ static void mkdelay() {
 	while (ret && errno == EINTR);
 }
 
-static void engine() {
-	static size_t step = 0;
+void engine() {
+	size_t step = 0;
 	size_t count = fabs(buffer.width * buffer.height * change);
 
 	LSCb_print(&buffer, 1);
@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-static void about() {
+void about() {
 	putchar('\n');
 	puts("  libScricon: The Simple Graphical Console Library");
 	puts("  Copyright (C) 2021-2022 Jyothiraditya Nellakra");
@@ -184,7 +184,7 @@ static void about() {
 	exit(0);
 }
 
-static void help(int ret) {
+void help(int ret) {
 	putchar('\n');
 	printf("  Usage: %s [OPTIONS]\n\n", name);
 
@@ -212,11 +212,11 @@ static void help(int ret) {
 	exit(ret);
 }
 
-static void help_flag() {
+void help_flag() {
 	help(0);
 }
 
-static void init(int argc, char **argv) {
+void init(int argc, char **argv) {
 	LCa_t *arg = LCa_new(); arg -> long_flag = "about";
 	arg -> short_flag = 'a'; arg -> pre = about;
 	arg = LCa_new(); arg -> long_flag = "help";
@@ -279,7 +279,7 @@ static void init(int argc, char **argv) {
 	}
 }
 
-static void on_interrupt(int signum) {
+void on_interrupt(int signum) {
 	if(signum != SIGINT) {
 		signal(signum, SIG_DFL);
 		return;
