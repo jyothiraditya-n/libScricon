@@ -34,7 +34,7 @@
 
 #include <LSC_buffer.h>
 #include <LSC_error.h>
-#include <LSC_lines.h>
+#include <LSC_triangles.h>
 
 const char *name;
 LSCb_t buffer;
@@ -76,19 +76,20 @@ void engine() {
 	mkdelay();
 
 	for(size_t i = 0; i < count; i++) {
-		size_t x1 = rand() % buffer.width, x2 = rand() % buffer.width;
-		size_t y1 = rand() % buffer.height, y2 = rand() % buffer.height;
-		
-		if(colour && len_fgs) LSCl_setfg(&buffer, x1, y1, x2, y2,
+		size_t x1 = rand() % buffer.width, y1 = rand() % buffer.height;
+		size_t x2 = rand() % buffer.width, y2 = rand() % buffer.height;
+		size_t x3 = rand() % buffer.width, y3 = rand() % buffer.height;
+
+		if(colour && len_fgs) LSCt_setfg(&buffer, x1, y1, x2, y2, x3, y3,
 			fgs[rand() % len_fgs]);
 
-		if(colour && len_bgs) LSCl_setbg(&buffer, x1, y1, x2, y2,
+		if(colour && len_bgs) LSCt_setbg(&buffer, x1, y1, x2, y2, x3, y3,
 			bgs[rand() % len_bgs]);
 
-		if(len_chrs) LSCl_set(&buffer, x1, y1, x2, y2,
+		if(len_chrs) LSCt_set(&buffer, x1, y1, x2, y2, x3, y3,
 			chrs[rand() % len_chrs]);
 
-		else LSCl_draw(&buffer, x1, y1, x2, y2);
+		else LSCt_set(&buffer, x1, y1, x2, y2, x3, y3, ' ');
 	}
 }
 
@@ -150,7 +151,7 @@ void about() {
 	putchar('\n');
 	puts("  libScricon: The Simple Graphical Console Library");
 	puts("  Copyright (C) 2021-2022 Jyothiraditya Nellakra");
-	puts("  Random Line Generator\n");
+	puts("  Random Triangle Generator\n");
 
 	puts("  This program is free software: you can redistribute it and/or modify");
 	puts("  it under the terms of the GNU General Public License as published by");
@@ -180,8 +181,8 @@ void help(int ret) {
 	puts("    -f, --fgs FGS           set the foreground colours to use");
 	puts("    -b, --bgs BGS           set the background colours to use\n");
 
-	puts("    -n, --count             set the number of line per frame\n");
-	puts("    -C, --colour            enable colour output");
+	puts("    -n, --count             set the number of triangles per frame");
+	puts("    -C, --colour            enable colour output\n");
 	
 	puts("  Note: CHRS is a single-string argument. FGS and BGS are a list of integers");
 	puts("        separated by spaces. FRAC and ROWS are doubles between 0.0 and 1.0.\n");
@@ -235,6 +236,10 @@ void init(int argc, char **argv) {
 	if(ret != LCA_OK) help(1);
 
 	len_chrs = strlen(chrs);
+	if(!colour && !len_chrs) {
+		for(uint8_t i = ' '; i <= '~'; i++) chrs[i - ' '] = i;
+		len_chrs = '~' - ' ' + 1;
+	}
 
 	if(!len_fgs) {
 		for(size_t i = 0; i < 256; i++) fgs[i] = i;
