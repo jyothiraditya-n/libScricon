@@ -205,11 +205,11 @@ void LSCb_setallz(LSCb_t *buf, size_t x, size_t y, double z,
 }
 
 size_t LSCb_getxz(LSCb_t *buf, double x, double z) {
-	return LSCb_getx(buf, x * -buf -> screen / z);
+	return LSCb_getx(buf, x * -buf -> screen / (z - buf -> screen));
 }
 
 size_t LSCb_getyz(LSCb_t *buf, double y, double z) {
-	return LSCb_gety(buf, y * -buf -> screen / z);
+	return LSCb_gety(buf, y * -buf -> screen / (z - buf -> screen));
 }
 
 void LSCb_setsz(LSCb_t *buf, size_t x, size_t y, double z, const char *data) {
