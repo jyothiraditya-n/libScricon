@@ -37,4 +37,24 @@ extern void LSCt_setbg(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 extern void LSCt_setall(LSCb_t *buf, size_t x1, size_t y1, size_t x2,
 	size_t y2, size_t x3, size_t y3, char chr, uint8_t fg, uint8_t bg);
 
+extern void LSCt_setz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2,
+	size_t x3, size_t y3, double z3, char chr);
+
+extern void LSCt_setcolz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2,
+	size_t x3, size_t y3, double z3, uint8_t fg, uint8_t bg);
+
+extern void LSCt_setfgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2,
+	size_t x3, size_t y3, double z3, uint8_t fg);
+
+extern void LSCt_setbgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2,
+	size_t x3, size_t y3, double z3, uint8_t bg);
+
+extern void LSCt_setallz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2,
+	size_t x3, size_t y3, double z3, char chr, uint8_t fg, uint8_t bg);
+
 #endif

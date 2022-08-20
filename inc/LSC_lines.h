@@ -48,4 +48,31 @@ extern void LSCl_drawfg(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 extern void LSCl_drawbg(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 	uint8_t bg);
 
+extern void LSCl_setz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, char chr);
+
+extern void LSCl_setcolz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, uint8_t fg, uint8_t bg);
+
+extern void LSCl_setfgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, uint8_t fg);
+
+extern void LSCl_setbgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, uint8_t bg);
+
+extern void LSCl_setallz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, char chr, uint8_t fg, uint8_t bg);
+
+extern void LSCl_drawz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2);
+
+extern void LSCl_drawcolz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, uint8_t fg, uint8_t bg);
+
+extern void LSCl_drawfgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, uint8_t fg);
+
+extern void LSCl_drawbgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
+	size_t x2, size_t y2, double z2, uint8_t bg);
+
 #endif

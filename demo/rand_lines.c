@@ -40,7 +40,7 @@ const char *name;
 LSCb_t buffer;
 
 struct termios cooked, raw;
-size_t height, width;
+size_t height, width, depth;
 
 size_t len_chrs;
 char chrs[256];
@@ -51,7 +51,7 @@ uint8_t fgs[256];
 size_t len_bgs;
 uint8_t bgs[256];
 
-bool colour;
+bool colour, three_d;
 bool running = true;
 
 size_t count = 1;
@@ -71,7 +71,7 @@ void mkdelay() {
 	while (ret && errno == EINTR);
 }
 
-void engine() {
+void engine_2d() {
 	LSCb_print(&buffer, 1);
 	mkdelay();
 
@@ -89,6 +89,29 @@ void engine() {
 			chrs[rand() % len_chrs]);
 
 		else LSCl_draw(&buffer, x1, y1, x2, y2);
+	}
+}
+
+void engine_3d() {
+	LSCb_print(&buffer, 1);
+	mkdelay();
+
+	for(size_t i = 0; i < count; i++) {
+		size_t x1 = rand() % buffer.width, x2 = rand() % buffer.width;
+		size_t y1 = rand() % buffer.height, y2 = rand() % buffer.height;
+		double z1 = -1.0 - (double) (rand() % depth);
+		double z2 = -1.0 - (double) (rand() % depth);
+		
+		if(colour && len_fgs) LSCl_setfgz(&buffer, x1, y1, z1,
+			x2, y2, z2, fgs[rand() % len_fgs]);
+
+		if(colour && len_bgs) LSCl_setbgz(&buffer, x1, y1, z1,
+			x2, y2, z2, bgs[rand() % len_bgs]);
+
+		if(len_chrs) LSCl_setz(&buffer, x1, y1, z1,
+			x2, y2, z2, chrs[rand() % len_chrs]);
+
+		else LSCl_drawz(&buffer, x1, y1, z1, x2, y2, z2);
 	}
 }
 
@@ -130,6 +153,9 @@ int main(int argc, char **argv) {
 	buffer.height = height;
 	buffer.width = width;
 
+	depth = width > height? width: height;
+	buffer.depth = depth;
+
 	ret = LSCb_alloc(&buffer);
 	if(ret != LSCE_OK) {
 		tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
@@ -139,7 +165,9 @@ int main(int argc, char **argv) {
 	}
 
 	srand(time(NULL));
-	while(running) engine();
+
+	if(three_d) while(running) engine_3d();
+	else while(running) engine_2d();
 
 	tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
 	printf("\033[?25h");
@@ -173,15 +201,16 @@ void help(int ret) {
 	printf("  Usage: %s [OPTIONS]\n\n", name);
 
 	puts("  Valid options are:");
-	puts("    -a, --about             print the about dialogue");
-	puts("    -h, --help              print this help dialogue\n");
+	puts("    -a, --about      print the about dialogue");
+	puts("    -h, --help       print this help dialogue\n");
 
-	puts("    -c, --chrs CHRS         set the characters to use");
-	puts("    -f, --fgs FGS           set the foreground colours to use");
-	puts("    -b, --bgs BGS           set the background colours to use\n");
+	puts("    -c, --chrs CHRS  set the characters to use");
+	puts("    -f, --fgs FGS    set the foreground colours to use");
+	puts("    -b, --bgs BGS    set the background colours to use\n");
 
-	puts("    -n, --count             set the number of line per frame\n");
-	puts("    -C, --colour            enable colour output");
+	puts("    -n, --count      set the number of line per frame");
+	puts("    -C, --colour     enable colour output");
+	puts("    -3, --3d         enable three dimensions\n");
 	
 	puts("  Note: CHRS is a single-string argument. FGS and BGS are a list of integers");
 	puts("        separated by spaces. FRAC and ROWS are doubles between 0.0 and 1.0.\n");
@@ -230,6 +259,10 @@ void init(int argc, char **argv) {
 	var -> fmt = "%zu"; var -> data = &count;
 	arg = LCa_new(); arg -> long_flag = "count";
 	arg -> short_flag = 'n'; arg -> var = var;
+
+	var = LCv_new(); var -> id = "three_d"; var -> data = &three_d;
+	arg = LCa_new(); arg -> long_flag = "3d"; arg -> short_flag = '3';
+	arg -> var = var; arg -> value = true;
 
 	int ret = LCa_read(argc, argv);
 	if(ret != LCA_OK) help(1);

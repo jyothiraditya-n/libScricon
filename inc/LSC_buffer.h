@@ -27,6 +27,7 @@ typedef struct {
 
 	size_t height;
 	size_t width;
+	double depth;
 
 	char *data;
 	double *zdata;
@@ -60,5 +61,34 @@ extern void LSCb_setcols(LSCb_t *buf, size_t x, size_t y, const char *data);
 extern void LSCb_setfgs(LSCb_t *buf, size_t x, size_t y, const char *data);
 extern void LSCb_setbgs(LSCb_t *buf, size_t x, size_t y, const char *data);
 extern void LSCb_setalls(LSCb_t *buf, size_t x, size_t y, const char *data);
+
+extern void LSCb_setz(LSCb_t *buf, size_t x, size_t y, double z, char chr);
+
+extern void LSCb_setcolz(LSCb_t *buf, size_t x, size_t y, double z,
+	uint8_t fg, uint8_t bg);
+
+extern void LSCb_setfgz(LSCb_t *buf, size_t x, size_t y, double z, uint8_t fg);
+extern void LSCb_setbgz(LSCb_t *buf, size_t x, size_t y, double z, uint8_t bg);
+
+extern void LSCb_setallz(LSCb_t *buf, size_t x, size_t y, double z,
+	char chr, uint8_t fg, uint8_t bg);
+
+extern size_t LSCb_getxz(LSCb_t *buf, double x, double z);
+extern size_t LSCb_getyz(LSCb_t *buf, double y, double z);
+
+extern void LSCb_setsz(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setcolsz(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setfgsz(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setbgsz(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setallsz(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
 
 #endif
