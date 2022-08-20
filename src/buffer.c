@@ -82,7 +82,7 @@ void LSCb_clear(LSCb_t *buf) {
 	else memset(buf -> data, ' ', buf -> width * buf -> height);
 
 	for(size_t i = 0; i < buf -> width * buf -> height; i++)
-		buf -> zdata[i] = 0.0;
+		buf -> zdata[i] = -DBL_MAX;
 }
 
 void LSCb_free(LSCb_t *buf) {
