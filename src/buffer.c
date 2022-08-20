@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <https://www.gnu.org/licenses/>. */
 
+#include <float.h>
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -31,7 +32,7 @@ void LSCb_init(LSCb_t *buf) {
 
 	buf -> height = 23;
 	buf -> width = 80;
-	buf -> depth = -1.0;
+	buf -> screen = 1.0;
 
 	buf -> data = NULL;
 	buf -> zdata = NULL;
@@ -66,7 +67,7 @@ int LSCb_alloc(LSCb_t *buf) {
 	else memset(buf -> data, ' ', buf -> width * buf -> height);
 
 	for(size_t i = 0; i < buf -> width * buf -> height; i++)
-		buf -> zdata[i] = -buf -> depth;
+		buf -> zdata[i] = -DBL_MAX;
 
 	buf -> data[buf -> chwidth * buf -> width * buf -> height] = 0;
 	return LSCE_OK;
@@ -204,11 +205,11 @@ void LSCb_setallz(LSCb_t *buf, size_t x, size_t y, double z,
 }
 
 size_t LSCb_getxz(LSCb_t *buf, double x, double z) {
-	return LSCb_getx(buf, x * -buf -> depth / z);
+	return LSCb_getx(buf, x * -buf -> screen / z);
 }
 
 size_t LSCb_getyz(LSCb_t *buf, double y, double z) {
-	return LSCb_gety(buf, y * -buf -> depth / z);
+	return LSCb_gety(buf, y * -buf -> screen / z);
 }
 
 void LSCb_setsz(LSCb_t *buf, size_t x, size_t y, double z, const char *data) {

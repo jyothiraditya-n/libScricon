@@ -99,8 +99,8 @@ void engine_3d() {
 	for(size_t i = 0; i < count; i++) {
 		size_t x1 = rand() % buffer.width, x2 = rand() % buffer.width;
 		size_t y1 = rand() % buffer.height, y2 = rand() % buffer.height;
-		double z1 = -1.0 - (double) (rand() % depth);
-		double z2 = -1.0 - (double) (rand() % depth);
+		double z1 = -buffer.screen - (double) (rand() % depth);
+		double z2 = -buffer.screen - (double) (rand() % depth);
 		
 		if(colour && len_fgs) LSCl_setfgz(&buffer, x1, y1, z1,
 			x2, y2, z2, fgs[rand() % len_fgs]);
@@ -153,9 +153,6 @@ int main(int argc, char **argv) {
 	buffer.height = height;
 	buffer.width = width;
 
-	depth = width > height? width: height;
-	buffer.depth = depth;
-
 	ret = LSCb_alloc(&buffer);
 	if(ret != LSCE_OK) {
 		tcsetattr(STDIN_FILENO, TCSANOW, &cooked);
@@ -164,6 +161,7 @@ int main(int argc, char **argv) {
 		exit(4);
 	}
 
+	depth = width > height? width: height;
 	srand(time(NULL));
 
 	if(three_d) while(running) engine_3d();

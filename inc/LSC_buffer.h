@@ -27,7 +27,7 @@ typedef struct {
 
 	size_t height;
 	size_t width;
-	double depth;
+	double screen;
 
 	char *data;
 	double *zdata;
