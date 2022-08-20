@@ -29,6 +29,9 @@ typedef struct {
 	size_t width;
 	double screen;
 
+	const char *clear;
+	char cl_chr;
+
 	char *data;
 	double *zdata;
 } LSCb_t;

@@ -34,6 +34,9 @@ void LSCb_init(LSCb_t *buf) {
 	buf -> width = 80;
 	buf -> screen = 1.0;
 
+	buf -> clear = LSCb_cch;
+	buf -> cl_chr = ' ';
+
 	buf -> data = NULL;
 	buf -> zdata = NULL;
 }
@@ -62,9 +65,9 @@ int LSCb_alloc(LSCb_t *buf) {
 	if(buf -> colour)
 		for(size_t i = 0; i < buf -> width * buf -> height; i++)
 			memcpy(&(buf -> data[i * buf -> chwidth]),
-				LSCb_cch, buf -> chwidth);
+				buf -> clear, buf -> chwidth);
 
-	else memset(buf -> data, ' ', buf -> width * buf -> height);
+	else memset(buf -> data, buf -> cl_chr, buf -> width * buf -> height);
 
 	for(size_t i = 0; i < buf -> width * buf -> height; i++)
 		buf -> zdata[i] = -DBL_MAX;
@@ -77,9 +80,9 @@ void LSCb_clear(LSCb_t *buf) {
 	if(buf -> colour)
 		for(size_t i = 0; i < buf -> width * buf -> height; i++)
 			memcpy(&(buf -> data[i * buf -> chwidth]),
-				LSCb_cch, buf -> chwidth);
+				buf -> clear, buf -> chwidth);
 
-	else memset(buf -> data, ' ', buf -> width * buf -> height);
+	else memset(buf -> data, buf -> cl_chr, buf -> width * buf -> height);
 
 	for(size_t i = 0; i < buf -> width * buf -> height; i++)
 		buf -> zdata[i] = -DBL_MAX;
