@@ -36,6 +36,9 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 	intmax_t d, dx = x2 - x1, dy;
 	char chr;
 
+	void (*setter)(LSCb_t *buf, size_t x, size_t y, char chr)
+		= call.buf -> validate? LSCb_setv: LSCb_set;
+
 	if(x1 > x2) {
 		algorithm(call, x2, y2, x1, y1);
 		return;
@@ -46,7 +49,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 			x = x2; chr = '|';
 			for(y = y2; y <= y1; ++y) {
 				call.function(call.buf, x, y, call.data);
-				LSCb_set(call.buf, x, y, chr);
+				setter(call.buf, x, y, chr);
 			}
 
 			return;
@@ -56,7 +59,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 			x = x1; y = y1; chr = '+';
 
 			call.function(call.buf, x, y, call.data);
-			LSCb_set(call.buf, x, y, chr);
+			setter(call.buf, x, y, chr);
 
 			return;
 		}
@@ -64,7 +67,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 		x = x1; chr = '|';
 		for(y = y1; y <= y2; ++y) {
 			call.function(call.buf, x, y, call.data);
-			LSCb_set(call.buf, x, y, chr);
+			setter(call.buf, x, y, chr);
 		}
 
 		return;
@@ -77,7 +80,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 			d = (2 * dy) - dx; y = y2; chr = '_';
 			for(x = x2; x >= x1; --x) {
 				call.function(call.buf, x, y, call.data);
-				LSCb_set(call.buf, x, y, chr);
+				setter(call.buf, x, y, chr);
 
 				if(d > 0) { ++y; d -= 2 * dx; chr = '/'; }
 				else chr = '_';
@@ -92,7 +95,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 			y = y1; chr = '/';
 			for(x = x1; x <= x2; ++x) {
 				call.function(call.buf, x, y, call.data);
-				LSCb_set(call.buf, x, y, chr);
+				setter(call.buf, x, y, chr);
 				--y;
 			}
 
@@ -102,7 +105,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 		d = (2 * dx) - dy; x = x2; chr = '|';
 		for(y = y2; y <= y1; ++y) {
 			call.function(call.buf, x, y, call.data);
-			LSCb_set(call.buf, x, y, chr);
+			setter(call.buf, x, y, chr);
 
 			if(d > 0) { --x; d -= 2 * dy; chr = '/'; }
 			else chr = '|';
@@ -117,7 +120,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 		y = y1; chr = '_';
 		for(x = x1; x <= x2; ++x) {
 			call.function(call.buf, x, y, call.data);
-			LSCb_set(call.buf, x, y, chr);
+			setter(call.buf, x, y, chr);
 		}
 
 		return;
@@ -129,7 +132,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 		d = (2 * dy) - dx; y = y1; chr = '_';
 		for(x = x1; x <= x2; ++x) {
 			call.function(call.buf, x, y, call.data);
-			LSCb_set(call.buf, x, y, chr);
+			setter(call.buf, x, y, chr);
 
 			if(d > 0) { ++y; d -= 2 * dx; chr = '\\'; }
 			else chr = '_';
@@ -144,7 +147,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 		y = y1; chr = '\\';
 		for(x = x1; x <= x2; ++x) {
 			call.function(call.buf, x, y, call.data);
-			LSCb_set(call.buf, x, y, chr);
+			setter(call.buf, x, y, chr);
 			++y;
 		}
 
@@ -154,7 +157,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1,
 	d = (2 * dx) - dy; x = x2; chr = '|';
 	for(y = y2; y >= y1; --y) {
 		call.function(call.buf, x, y, call.data);
-		LSCb_set(call.buf, x, y, chr);
+		setter(call.buf, x, y, chr);
 
 		if(d > 0) { --x; d -= 2 * dy; chr = '\\'; }
 		else chr = '|';
