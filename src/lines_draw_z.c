@@ -202,7 +202,7 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1, double z1,
 void LSCl_drawz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2)
 {
-	call_t call = {LSCb_setsz, buf, " "};
+	call_t call = {buf -> validate? LSCb_setszv: LSCb_setsz, buf, " "};
 	algorithm(call, x1, y1, z1, x2, y2, z2);
 }
 
@@ -210,7 +210,8 @@ void LSCl_drawcolz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2, uint8_t fg, uint8_t bg)
 {
 	char data[23];
-	call_t call = {LSCb_setcolsz, buf, " "};
+	call_t call = {buf -> validate? LSCb_setcolszv: LSCb_setcolsz,
+		buf, " "};
 
 	sprintf(data, "\033[48;5;%03um\033[38;5;%03um", bg, fg);
 	call.data = data;
@@ -222,7 +223,7 @@ void LSCl_drawfgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2, uint8_t fg)
 {
 	char data[12];
-	call_t call = {LSCb_setfgsz, buf, " "};
+	call_t call = {buf -> validate? LSCb_setfgszv: LSCb_setfgsz, buf, " "};
 
 	sprintf(data, "\033[38;5;%03um", fg);
 	call.data = data;
@@ -234,7 +235,7 @@ void LSCl_drawbgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2, uint8_t bg)
 {
 	char data[12];
-	call_t call = {LSCb_setbgsz, buf, " "};
+	call_t call = {buf -> validate? LSCb_setbgszv: LSCb_setbgsz, buf, " "};
 
 	sprintf(data, "\033[48;5;%03um", bg);
 	call.data = data;

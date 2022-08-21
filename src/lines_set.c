@@ -140,7 +140,7 @@ void LSCl_set(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 	char chr)
 {
 	char data[2] = {chr, ' '};
-	call_t call = {LSCb_sets, buf, " "};
+	call_t call = {buf -> validate? LSCb_setsv: LSCb_sets, buf, " "};
 	call.data = data;
 
 	algorithm(call, x1, y1, x2, y2);
@@ -150,7 +150,7 @@ void LSCl_setcol(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 	uint8_t fg, uint8_t bg)
 {
 	char data[23];
-	call_t call = {LSCb_setcols, buf, " "};
+	call_t call = {buf -> validate? LSCb_setcolsv: LSCb_setcols, buf, " "};
 
 	sprintf(data, "\033[48;5;%03um\033[38;5;%03um", bg, fg);
 	call.data = data;
@@ -162,7 +162,7 @@ void LSCl_setfg(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 	uint8_t fg)
 {
 	char data[12];
-	call_t call = {LSCb_setfgs, buf, " "};
+	call_t call = {buf -> validate? LSCb_setfgsv: LSCb_setfgs, buf, " "};
 
 	sprintf(data, "\033[38;5;%03um", fg);
 	call.data = data;
@@ -174,7 +174,7 @@ void LSCl_setbg(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 	uint8_t bg)
 {
 	char data[12];
-	call_t call = {LSCb_setbgs, buf, " "};
+	call_t call = {buf -> validate? LSCb_setbgsv: LSCb_setbgs, buf, " "};
 
 	sprintf(data, "\033[48;5;%03um", bg);
 	call.data = data;
@@ -186,7 +186,7 @@ void LSCl_setall(LSCb_t *buf, size_t x1, size_t y1, size_t x2, size_t y2,
 	char chr, uint8_t fg, uint8_t bg)
 {
 	char data[24];
-	call_t call = {LSCb_setalls, buf, " "};
+	call_t call = {buf -> validate? LSCb_setallsv: LSCb_setalls, buf, " "};
 
 	sprintf(data, "\033[48;5;%03um\033[38;5;%03um%c", bg, fg, chr);
 	call.data = data;

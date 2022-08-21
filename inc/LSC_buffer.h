@@ -29,8 +29,9 @@ typedef struct {
 	size_t width;
 	double screen;
 
-	const char *clear;
-	char cl_chr;
+	bool validate;
+	const char *cchs;
+	char cch;
 
 	char *data;
 	double *zdata;
@@ -92,6 +93,49 @@ extern void LSCb_setbgsz(LSCb_t *buf, size_t x, size_t y, double z,
 	const char *data);
 
 extern void LSCb_setallsz(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setv(LSCb_t *buf, size_t x, size_t y, char chr);
+
+extern void LSCb_setcolv(LSCb_t *buf, size_t x, size_t y,
+	uint8_t fg, uint8_t bg);
+
+extern void LSCb_setfgv(LSCb_t *buf, size_t x, size_t y, uint8_t fg);
+extern void LSCb_setbgv(LSCb_t *buf, size_t x, size_t y, uint8_t bg);
+
+extern void LSCb_setallv(LSCb_t *buf, size_t x, size_t y,
+	char chr, uint8_t fg, uint8_t bg);
+
+extern void LSCb_setsv(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setcolsv(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setfgsv(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setbgsv(LSCb_t *buf, size_t x, size_t y, const char *data);
+extern void LSCb_setallsv(LSCb_t *buf, size_t x, size_t y, const char *data);
+
+extern void LSCb_setzv(LSCb_t *buf, size_t x, size_t y, double z, char chr);
+
+extern void LSCb_setcolzv(LSCb_t *buf, size_t x, size_t y, double z,
+	uint8_t fg, uint8_t bg);
+
+extern void LSCb_setfgzv(LSCb_t *buf, size_t x, size_t y, double z, uint8_t fg);
+extern void LSCb_setbgzv(LSCb_t *buf, size_t x, size_t y, double z, uint8_t bg);
+
+extern void LSCb_setallzv(LSCb_t *buf, size_t x, size_t y, double z,
+	char chr, uint8_t fg, uint8_t bg);
+
+extern void LSCb_setszv(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setcolszv(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setfgszv(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setbgszv(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data);
+
+extern void LSCb_setallszv(LSCb_t *buf, size_t x, size_t y, double z,
 	const char *data);
 
 #endif

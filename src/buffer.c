@@ -34,8 +34,9 @@ void LSCb_init(LSCb_t *buf) {
 	buf -> width = 80;
 	buf -> screen = 1.0;
 
-	buf -> clear = LSCb_cch;
-	buf -> cl_chr = ' ';
+	buf -> validate = false;
+	buf -> cchs = LSCb_cch;
+	buf -> cch = ' ';
 
 	buf -> data = NULL;
 	buf -> zdata = NULL;
@@ -65,9 +66,9 @@ int LSCb_alloc(LSCb_t *buf) {
 	if(buf -> colour)
 		for(size_t i = 0; i < buf -> width * buf -> height; i++)
 			memcpy(&(buf -> data[i * buf -> chwidth]),
-				buf -> clear, buf -> chwidth);
+				buf -> cchs, buf -> chwidth);
 
-	else memset(buf -> data, buf -> cl_chr, buf -> width * buf -> height);
+	else memset(buf -> data, buf -> cch, buf -> width * buf -> height);
 
 	for(size_t i = 0; i < buf -> width * buf -> height; i++)
 		buf -> zdata[i] = -DBL_MAX;
@@ -80,9 +81,9 @@ void LSCb_clear(LSCb_t *buf) {
 	if(buf -> colour)
 		for(size_t i = 0; i < buf -> width * buf -> height; i++)
 			memcpy(&(buf -> data[i * buf -> chwidth]),
-				buf -> clear, buf -> chwidth);
+				buf -> cchs, buf -> chwidth);
 
-	else memset(buf -> data, buf -> cl_chr, buf -> width * buf -> height);
+	else memset(buf -> data, buf -> cch, buf -> width * buf -> height);
 
 	for(size_t i = 0; i < buf -> width * buf -> height; i++)
 		buf -> zdata[i] = -DBL_MAX;
@@ -146,19 +147,19 @@ void LSCb_setall(LSCb_t *buf, size_t x, size_t y,
 	buf -> data[23 * (x + y * buf -> width) + 22] = chr;
 }
 
-extern size_t LSCb_getx(LSCb_t *buf, double x) {
+size_t LSCb_getx(LSCb_t *buf, double x) {
 	const double width = buf -> width % 2? buf -> width: buf -> width - 1;
 	return (width / 2) + x * (width / 2);
 }
 
-extern size_t LSCb_gety(LSCb_t *buf, double y) {
+size_t LSCb_gety(LSCb_t *buf, double y) {
 	const double height = buf -> height % 2?
 		buf -> height: buf -> height - 1;
 
 	return (height / 2) + y * (height / 2);
 }
 
-extern void LSCb_sets(LSCb_t *buf, size_t x, size_t y, const char *data) {
+void LSCb_sets(LSCb_t *buf, size_t x, size_t y, const char *data) {
 	buf -> data[buf -> chwidth * (x + y * buf -> width + 1) - 1] = data[0];
 }
 
@@ -247,4 +248,106 @@ void LSCb_setallsz(LSCb_t *buf, size_t x, size_t y, double z,
 	if(buf -> zdata[x + y * buf -> width] > z) return;
 	LSCb_setalls(buf, x, y, data);
 	buf -> zdata[x + y * buf -> width] = z;
+}
+
+void LSCb_setv(LSCb_t *buf, size_t x, size_t y, char chr) {
+	if(x < buf -> width && y < buf -> height)
+		LSCb_set(buf, x, y, chr);
+}
+
+void LSCb_setcolv(LSCb_t *buf, size_t x, size_t y, uint8_t fg, uint8_t bg) {
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setcol(buf, x, y, fg, bg);
+}
+
+void LSCb_setfgv(LSCb_t *buf, size_t x, size_t y, uint8_t fg) {
+	if(x < buf -> width && y < buf -> height) LSCb_setfg(buf, x, y, fg);
+}
+
+void LSCb_setbgv(LSCb_t *buf, size_t x, size_t y, uint8_t bg) {
+	if(x < buf -> width && y < buf -> height) LSCb_setbg(buf, x, y, bg);
+}
+
+void LSCb_setallv(LSCb_t *buf, size_t x, size_t y,
+	char chr, uint8_t fg, uint8_t bg)
+{
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setall(buf, x, y, chr, fg, bg);
+}
+
+void LSCb_setsv(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	if(x < buf -> width && y < buf -> height) LSCb_sets(buf, x, y, data);
+}
+
+void LSCb_setcolsv(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	if(x < buf -> width && y < buf -> height) LSCb_setcols(buf, x, y, data);
+}
+
+void LSCb_setfgsv(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	if(x < buf -> width && y < buf -> height) LSCb_setfgs(buf, x, y, data);
+}
+
+void LSCb_setbgsv(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	if(x < buf -> width && y < buf -> height) LSCb_setbgs(buf, x, y, data);
+}
+
+void LSCb_setallsv(LSCb_t *buf, size_t x, size_t y, const char *data) {
+	if(x < buf -> width && y < buf -> height) LSCb_setalls(buf, x, y, data);
+}
+
+void LSCb_setzv(LSCb_t *buf, size_t x, size_t y, double z, char chr) {
+	if(x < buf -> width && y < buf -> height) LSCb_setz(buf, x, y, z, chr);
+}
+
+void LSCb_setcolzv(LSCb_t *buf, size_t x, size_t y, double z,
+	uint8_t fg, uint8_t bg)
+{
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setcolz(buf, x, y, z, fg, bg);
+}
+
+void LSCb_setfgzv(LSCb_t *buf, size_t x, size_t y, double z, uint8_t fg) {
+	if(x < buf -> width && y < buf -> height) LSCb_setfgz(buf, x, y, z, fg);
+}
+
+void LSCb_setbgzv(LSCb_t *buf, size_t x, size_t y, double z, uint8_t bg) {
+	if(x < buf -> width && y < buf -> height) LSCb_setbgz(buf, x, y, z, bg);
+}
+
+void LSCb_setallzv(LSCb_t *buf, size_t x, size_t y, double z,
+	char chr, uint8_t fg, uint8_t bg)
+{
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setallz(buf, x, y, z, chr, fg, bg);
+}
+
+void LSCb_setszv(LSCb_t *buf, size_t x, size_t y, double z, const char *data) {
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setsz(buf, x, y, z, data);
+}
+
+void LSCb_setcolszv(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data)
+{
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setcolsz(buf, x, y, z, data);
+}
+
+void LSCb_setfgszv(LSCb_t *buf, size_t x, size_t y, double z, const char *data)
+{
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setfgsz(buf, x, y, z, data);
+}
+
+void LSCb_setbgszv(LSCb_t *buf, size_t x, size_t y, double z, const char *data)
+{
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setbgsz(buf, x, y, z, data);
+}
+
+void LSCb_setallszv(LSCb_t *buf, size_t x, size_t y, double z,
+	const char *data)
+{
+	if(x < buf -> width && y < buf -> height)
+		LSCb_setallsz(buf, x, y, z, data);
 }
