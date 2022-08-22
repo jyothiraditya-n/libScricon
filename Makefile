@@ -51,7 +51,7 @@ $(demo_shs) : % : demo/%.sh
 	cp $< $@; chmod +x $@
 
 libClame/libClame.a : libClame
-	+cd libClame; make libClame.a; cd ..
+	+cd libClame; $(MAKE) libClame.a;
 
 .DEFAULT_GOAL = all
 .PHONY : all clean
@@ -60,4 +60,4 @@ all : libScricon.a $(demos) $(demo_shs)
 
 clean :
 	$(CLEAN)
-	+cd libClame; make clean; cd ..
+	+cd libClame; $(MAKE) clean
