@@ -27,10 +27,10 @@ files += $(wildcard *.a)
 
 CLEAN = $(foreach file,$(files),rm $(file);)
 
-CPPFLAGS += -std=gnu17 -Wall -Wextra -Wpedantic -O3
+CPPFLAGS += -std=gnu17 -Wall -Wextra -Wpedantic -Ofast
 CPPFLAGS += -I inc/ -I libClame/inc/
 
-CFLAGS += -std=gnu17 -O3 -s
+CFLAGS += -std=gnu17 -Ofast -s
 
 libs = libClame/libClame.a libScricon.a
 LD_LIBS ?= -L. -lScricon -lm -L libClame -lClame
