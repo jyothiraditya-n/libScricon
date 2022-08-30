@@ -34,7 +34,7 @@ void LSCb_init(LSCb_t *buf) {
 	buf -> width = 80;
 	buf -> screen = 1.0;
 
-	buf -> validate = false;
+	buf -> validate = LSCB_VALIDATE_NONE;
 	buf -> cchs = LSCb_cch;
 	buf -> cch = ' ';
 

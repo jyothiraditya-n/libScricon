@@ -38,7 +38,8 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1, double z1,
 	intmax_t d, dx = x2 - x1, dy;
 
 	void (*setter)(LSCb_t *buf, size_t x, size_t y, double z, char chr)
-		= call.buf -> validate? LSCb_setzv: LSCb_setz;
+		= call.buf -> validate == LSCB_VALIDATE_CHAR?
+			LSCb_setzv : LSCb_setz;
 
 	double z, dz = z2 - z1;
 	char chr;
@@ -205,15 +206,31 @@ static void algorithm(call_t call, intmax_t x1, intmax_t y1, double z1,
 void LSCl_drawz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2)
 {
-	call_t call = {buf -> validate? LSCb_setszv: LSCb_setsz, buf, " "};
+	bool validate = buf -> validate == LSCB_VALIDATE_CHAR;
+
+	if(buf -> validate == LSCB_VALIDATE_SHAPE) {
+		if(x1 >= buf -> width || x2 >= buf -> width
+			|| y1 >= buf -> height || y2 >= buf -> height)
+		{ return; }
+	}
+
+	call_t call = {validate? LSCb_setszv: LSCb_setsz, buf, " "};
 	algorithm(call, x1, y1, z1, x2, y2, z2);
 }
 
 void LSCl_drawcolz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2, uint8_t fg, uint8_t bg)
 {
+	bool validate = buf -> validate == LSCB_VALIDATE_CHAR;
+
+	if(buf -> validate == LSCB_VALIDATE_SHAPE) {
+		if(x1 >= buf -> width || x2 >= buf -> width
+			|| y1 >= buf -> height || y2 >= buf -> height)
+		{ return; }
+	}
+
 	char data[23];
-	call_t call = {buf -> validate? LSCb_setcolszv: LSCb_setcolsz,
+	call_t call = {validate? LSCb_setcolszv: LSCb_setcolsz,
 		buf, " "};
 
 	sprintf(data, "\033[48;5;%03um\033[38;5;%03um", bg, fg);
@@ -225,8 +242,16 @@ void LSCl_drawcolz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 void LSCl_drawfgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2, uint8_t fg)
 {
+	bool validate = buf -> validate == LSCB_VALIDATE_CHAR;
+
+	if(buf -> validate == LSCB_VALIDATE_SHAPE) {
+		if(x1 >= buf -> width || x2 >= buf -> width
+			|| y1 >= buf -> height || y2 >= buf -> height)
+		{ return; }
+	}
+
 	char data[12];
-	call_t call = {buf -> validate? LSCb_setfgszv: LSCb_setfgsz, buf, " "};
+	call_t call = {validate? LSCb_setfgszv: LSCb_setfgsz, buf, " "};
 
 	sprintf(data, "\033[38;5;%03um", fg);
 	call.data = data;
@@ -237,8 +262,16 @@ void LSCl_drawfgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 void LSCl_drawbgz(LSCb_t *buf, size_t x1, size_t y1, double z1,
 	size_t x2, size_t y2, double z2, uint8_t bg)
 {
+	bool validate = buf -> validate == LSCB_VALIDATE_CHAR;
+
+	if(buf -> validate == LSCB_VALIDATE_SHAPE) {
+		if(x1 >= buf -> width || x2 >= buf -> width
+			|| y1 >= buf -> height || y2 >= buf -> height)
+		{ return; }
+	}
+
 	char data[12];
-	call_t call = {buf -> validate? LSCb_setbgszv: LSCb_setbgsz, buf, " "};
+	call_t call = {validate? LSCb_setbgszv: LSCb_setbgsz, buf, " "};
 
 	sprintf(data, "\033[48;5;%03um", bg);
 	call.data = data;

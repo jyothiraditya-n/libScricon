@@ -29,13 +29,17 @@ typedef struct {
 	size_t width;
 	double screen;
 
-	bool validate;
+	int validate;
 	const char *cchs;
 	char cch;
 
 	char *data;
 	double *zdata;
 } LSCb_t;
+
+#define LSCB_VALIDATE_NONE 0
+#define LSCB_VALIDATE_CHAR 1
+#define LSCB_VALIDATE_SHAPE 2
 
 extern const char *LSCb_cch;
 
